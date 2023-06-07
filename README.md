@@ -1,3 +1,3 @@
-# AIPA Code Sets
+# Finna Code Sets
 
-Support library for code sets used in the AIPA metamodel.
+Support library for code sets used in Finna record formats.

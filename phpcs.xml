@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="VuFind Coding Standards" namespace="VuFind\PHPCS">
+  <description>Coding standards for VuFind.</description>
+  <file>./src</file>
+  <arg name="extensions" value="php"/>
+  <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+    <rule ref="Generic.Commenting.DocComment"/>
+  <rule ref="Squiz.Commenting.DocCommentAlignment"/>
+  <!-- Lines can be 120 chars long, but never show errors -->
+  <rule ref="Generic.Files.LineLength">
+    <properties>
+      <property name="lineLimit" value="120"/>
+      <property name="absoluteLineLimit" value="0"/>
+    </properties>
+  </rule>
+  <rule ref="PSR12" />
+</ruleset>

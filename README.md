@@ -9,11 +9,14 @@ Support library for code sets used in Finna record formats.
 The initial version provides support for [LRMI_FI](https://wiki.eduuni.fi/pages/viewpage.action?pageId=222560437) and the following sources:
 
 - DVV Koodistot
-    - Educational levels
-    - Licences
-- OPH ePerusteet
+    - [Educational levels](http://uri.suomi.fi/codelist/edtech/Koulutusaste)
+    - [Licences](http://uri.suomi.fi/codelist/edtech/Licence)
+- [OPH ePerusteet](https://wiki.eduuni.fi/display/OPHPALV/ePerusteet+julkiset+rajapinnat)
     - Educational levels
     - Educational subjects
-    - Organisations
     - Study contents
     - Study objectives
+- [OPH Koodisto](https://wiki.eduuni.fi/display/OPHPALV/Koodistopalvelu)
+  - Educational subjects
+- [OPH Organisaatio](https://wiki.eduuni.fi/display/OPHPALV/Organisaatiopalvelu)
+  - Organisations

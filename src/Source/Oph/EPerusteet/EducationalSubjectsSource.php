@@ -2,7 +2,6 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
-use NatLibFi\FinnaCodeSets\CacheInterface;
 use NatLibFi\FinnaCodeSets\ClientInterface;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
@@ -10,6 +9,7 @@ use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\OphEperusteetEducationalSubject;
 use NatLibFi\FinnaCodeSets\Source\AbstractApi;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 class EducationalSubjectsSource extends AbstractApi implements EducationalSubjectsSourceInterface
 {
@@ -22,7 +22,7 @@ class EducationalSubjectsSource extends AbstractApi implements EducationalSubjec
 
     public function __construct(
         ClientInterface $httpClient,
-        CacheInterface $cache,
+        CacheItemPoolInterface $cache,
         string $apiBaseUrl,
         EducationalLevelsSource $educationalLevelsSource
     ) {
@@ -35,8 +35,8 @@ class EducationalSubjectsSource extends AbstractApi implements EducationalSubjec
      */
     public function getEducationalSubjects(string $levelCodeValue): array
     {
-        $cacheKey = __METHOD__ . '|' . $levelCodeValue;
-        if (!$this->cache->exists($cacheKey)) {
+        $cacheKey = md5(__METHOD__ . '|' . $levelCodeValue);
+        if (!$this->cacheHasItem($cacheKey)) {
             switch ($levelCodeValue) {
                 case EducationalLevelInterface::BASIC_EDUCATION:
                     $educationalSubjects = $this->processApiResponse(
@@ -55,9 +55,9 @@ class EducationalSubjectsSource extends AbstractApi implements EducationalSubjec
                 default:
                     throw NotSupportedException::forEducationalLevel($levelCodeValue);
             }
-            $this->cache->set($cacheKey, $educationalSubjects);
+            return $this->cacheSet($cacheKey, $educationalSubjects);
         }
-        return $this->cache->get($cacheKey);
+        return $this->cacheGet($cacheKey);
     }
 
     /**

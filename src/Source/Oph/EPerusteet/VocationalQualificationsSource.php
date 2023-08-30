@@ -56,15 +56,15 @@ class VocationalQualificationsSource extends AbstractApi implements VocationalQu
      */
     public function getVocationalCommonUnits(): array
     {
-        $cacheKey = __METHOD__;
-        if (!$this->cache->exists($cacheKey)) {
+        $cacheKey = md5(__METHOD__);
+        if (!$this->cacheHasItem($cacheKey)) {
             $units = $this->processApiResponse(
                 $this->apiGet(OphEPerusteet::VOCATIONAL_COMMON_UNITS_API_METHOD),
                 true
             );
-            $this->cache->set($cacheKey, $units);
+            return $this->cacheSet($cacheKey, $units);
         }
-        return $this->cache->get($cacheKey);
+        return $this->cacheGet($cacheKey);
     }
 
     /**
@@ -75,9 +75,9 @@ class VocationalQualificationsSource extends AbstractApi implements VocationalQu
         if ($levelCodeValue !== EducationalLevelInterface::VOCATIONAL_EDUCATION) {
             throw NotSupportedException::forEducationalLevel($levelCodeValue);
         }
-        $cacheKey = __METHOD__;
-        if (!$this->cache->exists($cacheKey)) {
-            $this->cache->set(
+        $cacheKey = md5(__METHOD__);
+        if (!$this->cacheHasItem($cacheKey)) {
+            return $this->cacheSet(
                 $cacheKey,
                 array_merge(
                     $this->getVocationalUpperSecondaryQualifications(),
@@ -87,7 +87,7 @@ class VocationalQualificationsSource extends AbstractApi implements VocationalQu
                 )
             );
         }
-        return $this->cache->get($cacheKey);
+        return $this->cacheGet($cacheKey);
     }
 
     /**
@@ -126,7 +126,7 @@ class VocationalQualificationsSource extends AbstractApi implements VocationalQu
      */
     protected function getQualifications(string $cacheKey, array $params, bool $includeUnits): array
     {
-        if (!$this->cache->exists($cacheKey)) {
+        if (!$this->cacheHasItem($cacheKey)) {
             $params = array_merge(
                 OphEPerusteetInterface::VOCATIONAL_QUALIFICATIONS_API_PARAMETERS,
                 $params
@@ -150,9 +150,9 @@ class VocationalQualificationsSource extends AbstractApi implements VocationalQu
                 }
                 $params['sivu'] += 1;
             }
-            $this->cache->set($cacheKey, $qualifications);
+            return $this->cacheSet($cacheKey, $qualifications);
         }
-        return $this->cache->get($cacheKey);
+        return $this->cacheGet($cacheKey);
     }
 
     /**

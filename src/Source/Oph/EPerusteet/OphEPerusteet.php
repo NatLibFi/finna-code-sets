@@ -2,11 +2,11 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
-use NatLibFi\FinnaCodeSets\CacheInterface;
 use NatLibFi\FinnaCodeSets\ClientInterface;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 class OphEPerusteet implements OphEPerusteetInterface
 {
@@ -23,7 +23,7 @@ class OphEPerusteet implements OphEPerusteetInterface
      */
     public function __construct(
         ClientInterface $httpClient,
-        CacheInterface $cache,
+        CacheItemPoolInterface $cache,
         string $apiBaseUrl = OphEPerusteetInterface::DEFAULT_API_BASE_URL
     ) {
         $this->educationalLevels = new EducationalLevelsSource($httpClient, $cache, $apiBaseUrl);

@@ -2,27 +2,22 @@
 
 namespace NatLibFi\FinnaCodeSets\Source;
 
-use NatLibFi\FinnaCodeSets\CacheInterface;
+use NatLibFi\FinnaCodeSets\CacheTrait;
 use NatLibFi\FinnaCodeSets\ClientInterface;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
-use NatLibFi\FinnaCodeSets\Exception\ValueNotSetException;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 
 abstract class AbstractApi
 {
+    use CacheTrait;
+
     /**
      * HTTP client.
      *
      * @var ClientInterface
      */
     protected ClientInterface $httpClient;
-
-    /**
-     * Cache.
-     *
-     * @var CacheInterface
-     */
-    protected CacheInterface $cache;
 
     /**
      * API base URL.
@@ -36,7 +31,7 @@ abstract class AbstractApi
      */
     public function __construct(
         ClientInterface $httpClient,
-        CacheInterface $cache,
+        CacheItemPoolInterface $cache,
         string $apiBaseUrl
     ) {
         $this->httpClient = $httpClient;
@@ -56,7 +51,6 @@ abstract class AbstractApi
      *   The response as an array.
      *
      * @throws ClientExceptionInterface
-     * @throws ValueNotSetException
      */
     protected function apiGet(string $method, array|object $query = []): array
     {
@@ -64,11 +58,12 @@ abstract class AbstractApi
         if (!empty($query)) {
             $uri .= '?' . http_build_query($query);
         }
-        if (!$this->cache->exists($uri)) {
+        $cacheKey = md5($uri);
+        if (!$this->cacheHasItem($cacheKey)) {
             $response = $this->httpClient->get($uri);
-            $this->cache->set($uri, json_decode($response->getBody(), true));
+            return $this->cacheSet($cacheKey, json_decode($response->getBody(), true));
         }
-        return $this->cache->get($uri);
+        return $this->cacheGet($cacheKey);
     }
 
     /**

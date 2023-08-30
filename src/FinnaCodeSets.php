@@ -14,10 +14,11 @@ use NatLibFi\FinnaCodeSets\Source\Oph\Koodisto\OphKoodistoInterface;
 use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatio;
 use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatioInterface;
 use NatLibFi\FinnaCodeSets\Utility\EducationalData;
+use Psr\Cache\CacheItemPoolInterface;
 
 class FinnaCodeSets implements FinnaCodeSetsInterface
 {
-    protected CacheInterface $cache;
+    use CacheTrait;
 
     protected DvvKoodistot $dvvKoodistot;
 
@@ -34,7 +35,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function __construct(
         ClientInterface $httpClient = null,
-        CacheInterface $cache = null,
+        CacheItemPoolInterface $cache = null,
         string $dvvKoodistotApiBaseUrl = DvvKoodistotInterface::DEFAULT_API_BASE_URL,
         string $ophEPerusteetApiBaseUrl = OphEPerusteetInterface::DEFAULT_API_BASE_URL,
         string $ophKoodistoApiBaseUrl = OphKoodistoInterface::DEFAULT_API_BASE_URL,
@@ -44,7 +45,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
             $httpClient = new DefaultClient();
         }
         if (null === $cache) {
-            $cache = new DefaultCache();
+            $cache = new DefaultCacheItemPool();
         }
         $this->cache = $cache;
         $this->dvvKoodistot = new DvvKoodistot($httpClient, $cache, $dvvKoodistotApiBaseUrl);
@@ -57,7 +58,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     /**
      * {@inheritdoc}
      */
-    public function getCache(): CacheInterface
+    public function getCache(): CacheItemPoolInterface
     {
         return $this->cache;
     }
@@ -75,15 +76,15 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function getEducationalLevels(): array
     {
-        $cacheKey = __METHOD__;
-        if (!$this->cache->exists($cacheKey)) {
+        $cacheKey = md5(__METHOD__);
+        if (!$this->cacheHasItem($cacheKey)) {
             $educationalLevels = $this->dvvKoodistot->getEducationalLevels();
             foreach ($educationalLevels as $educationalLevel) {
                 $this->addEquivalentEducationalLevels($educationalLevel);
             }
-            $this->cache->set($cacheKey, $educationalLevels);
+            return $this->cacheSet($cacheKey, $educationalLevels);
         }
-        return $this->cache->get($cacheKey);
+        return $this->cacheGet($cacheKey);
     }
 
     /**

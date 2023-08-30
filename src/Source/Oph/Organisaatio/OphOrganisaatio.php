@@ -3,10 +3,20 @@
 namespace NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio;
 
 use NatLibFi\FinnaCodeSets\Model\Organisation\Organisation;
-use NatLibFi\FinnaCodeSets\Source\AbstractApi;
+use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
 
-class OphOrganisaatio extends AbstractApi implements OphOrganisaatioInterface
+class OphOrganisaatio extends AbstractSource implements OphOrganisaatioInterface
 {
+    public function __construct(
+        ClientInterface $httpClient,
+        CacheItemPoolInterface $cache,
+        string $apiBaseUrl = OphOrganisaatioInterface::DEFAULT_API_BASE_URL
+    ) {
+        parent::__construct($httpClient, $cache, $apiBaseUrl);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -23,7 +33,7 @@ class OphOrganisaatio extends AbstractApi implements OphOrganisaatioInterface
         // Create objects from response.
         $organisations = [];
         foreach ($response['organisaatiot'] as $result) {
-            $organisation = new Organisation($result, $this->apiBaseUrl);
+            $organisation = new Organisation($result, $this->getApiBaseUrl());
             $organisations[$organisation->getId()] = $organisation;
         }
         // Build object hierarchy.

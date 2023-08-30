@@ -5,10 +5,20 @@ namespace NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\DvvKoodistotEducationalLevel;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\Licence\Licence;
-use NatLibFi\FinnaCodeSets\Source\AbstractApi;
+use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
 
-class DvvKoodistot extends AbstractApi implements DvvKoodistotInterface
+class DvvKoodistot extends AbstractSource implements DvvKoodistotInterface
 {
+    public function __construct(
+        ClientInterface $httpClient,
+        CacheItemPoolInterface $cache,
+        string $apiBaseUrl = DvvKoodistotInterface::DEFAULT_API_BASE_URL
+    ) {
+        parent::__construct($httpClient, $cache, $apiBaseUrl);
+    }
+
     /**
      * {@inheritdoc}
      */

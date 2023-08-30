@@ -7,13 +7,9 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot\DvvKoodistot;
-use NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot\DvvKoodistotInterface;
 use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteet;
-use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteetInterface;
 use NatLibFi\FinnaCodeSets\Source\Oph\Koodisto\OphKoodisto;
-use NatLibFi\FinnaCodeSets\Source\Oph\Koodisto\OphKoodistoInterface;
 use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatio;
-use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatioInterface;
 use NatLibFi\FinnaCodeSets\Utility\EducationalData;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
@@ -39,22 +35,10 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      *     PSR-18 compliant HTTP Client, or null for default client.
      * @param CacheItemPoolInterface|null $cache
      *     PSR-6 compliant caching system, or null for default cache.
-     * @param string $dvvKoodistotApiBaseUrl
-     *     DVV koodistot API base URL (optional).
-     * @param string $ophEPerusteetApiBaseUrl
-     *     OPH ePerusteet API base URL (optional).
-     * @param string $ophKoodistoApiBaseUrl
-     *     OPH Koodisto API base URL (optional).
-     * @param string $ophOrganisaatioApiBaseUrl
-     *     OPH Organisaatio API base URL (optional).
      */
     public function __construct(
         ClientInterface $httpClient = null,
-        CacheItemPoolInterface $cache = null,
-        string $dvvKoodistotApiBaseUrl = DvvKoodistotInterface::DEFAULT_API_BASE_URL,
-        string $ophEPerusteetApiBaseUrl = OphEPerusteetInterface::DEFAULT_API_BASE_URL,
-        string $ophKoodistoApiBaseUrl = OphKoodistoInterface::DEFAULT_API_BASE_URL,
-        string $ophOrganisaatioApiBaseUrl = OphOrganisaatioInterface::DEFAULT_API_BASE_URL
+        CacheItemPoolInterface $cache = null
     ) {
         if (null === $httpClient) {
             $httpClient = new Client();
@@ -63,10 +47,10 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
             $cache = new DefaultCacheItemPool();
         }
         $this->cache = $cache;
-        $this->dvvKoodistot = new DvvKoodistot($httpClient, $cache, $dvvKoodistotApiBaseUrl);
-        $this->ophEPerusteet = new OphEPerusteet($httpClient, $cache, $ophEPerusteetApiBaseUrl);
-        $this->ophKoodisto = new OphKoodisto($httpClient, $cache, $ophKoodistoApiBaseUrl);
-        $this->ophOrganisaatio = new OphOrganisaatio($httpClient, $cache, $ophOrganisaatioApiBaseUrl);
+        $this->dvvKoodistot = new DvvKoodistot($httpClient, $cache);
+        $this->ophEPerusteet = new OphEPerusteet($httpClient, $cache);
+        $this->ophKoodisto = new OphKoodisto($httpClient, $cache);
+        $this->ophOrganisaatio = new OphOrganisaatio($httpClient, $cache);
         $this->educationalData = new EducationalData($this);
     }
 

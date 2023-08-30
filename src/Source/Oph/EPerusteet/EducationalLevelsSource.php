@@ -4,11 +4,11 @@ namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\OphEPerusteetEducationalLevel;
-use NatLibFi\FinnaCodeSets\Source\AbstractApi;
+use NatLibFi\FinnaCodeSets\Source\AbstractSource;
 use NatLibFi\FinnaCodeSets\Source\EducationalLevelsSourceInterface;
 use NatLibFi\FinnaCodeSets\Utility\Assert;
 
-class EducationalLevelsSource extends AbstractApi implements EducationalLevelsSourceInterface
+class EducationalLevelsSource extends AbstractSource implements EducationalLevelsSourceInterface
 {
     /**
      * {@inheritdoc}
@@ -20,7 +20,7 @@ class EducationalLevelsSource extends AbstractApi implements EducationalLevelsSo
             $educationalLevels = [];
             $response = $this->apiGet(OphEPerusteetInterface::BASIC_EDUCATION_EDUCATIONAL_LEVELS_API_METHOD);
             foreach ($response as $result) {
-                $educationalLevel = new OphEPerusteetEducationalLevel($result, $this->apiBaseUrl);
+                $educationalLevel = new OphEPerusteetEducationalLevel($result, $this->getApiBaseUrl());
                 $educationalLevels[$educationalLevel->getId()] = $educationalLevel;
             }
             return $this->cacheSet($cacheKey, $educationalLevels);

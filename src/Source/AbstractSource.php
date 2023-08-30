@@ -9,7 +9,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 
-abstract class AbstractApi
+abstract class AbstractSource implements SourceInterface
 {
     use CacheTrait;
 
@@ -25,7 +25,7 @@ abstract class AbstractApi
      *
      * @var string
      */
-    protected string $apiBaseUrl;
+    private string $apiBaseUrl;
 
     /**
      * AbstractConnection constructor.
@@ -37,7 +37,34 @@ abstract class AbstractApi
     ) {
         $this->httpClient = $httpClient;
         $this->cache = $cache;
+        $this->setApiBaseUrl($apiBaseUrl);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getApiBaseUrl(): string
+    {
+        return $this->apiBaseUrl;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setApiBaseUrl(string $apiBaseUrl): void
+    {
         $this->apiBaseUrl = $apiBaseUrl;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function assertApiBaseUrl(string $url): string
+    {
+        if (!str_starts_with($url, $this->getApiBaseUrl())) {
+            throw new NotSupportedException('API URL ' . $url);
+        }
+        return $url;
     }
 
     /**
@@ -55,7 +82,7 @@ abstract class AbstractApi
      */
     protected function apiGet(string $method, array|object $query = []): array
     {
-        $uri = $this->apiBaseUrl . $method;
+        $uri = $this->getApiBaseUrl() . $method;
         if (!empty($query)) {
             $uri .= '?' . http_build_query($query);
         }
@@ -65,22 +92,5 @@ abstract class AbstractApi
             return $this->cacheSet($cacheKey, json_decode($response->getBody(), true));
         }
         return $this->cacheGet($cacheKey);
-    }
-
-    /**
-     * Asserts that the URL is for this API.
-     *
-     * @param string $url
-     *
-     * @return string
-     *
-     * @throws NotSupportedException
-     */
-    protected function assertBaseUrl(string $url): string
-    {
-        if (!str_starts_with($url, $this->apiBaseUrl)) {
-            throw new NotSupportedException('API URL ' . $url);
-        }
-        return $url;
     }
 }

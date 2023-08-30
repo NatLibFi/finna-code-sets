@@ -6,12 +6,12 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\OphEperusteetEducationalSubject;
-use NatLibFi\FinnaCodeSets\Source\AbstractApi;
+use NatLibFi\FinnaCodeSets\Source\AbstractSource;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 
-class EducationalSubjectsSource extends AbstractApi implements EducationalSubjectsSourceInterface
+class EducationalSubjectsSource extends AbstractSource implements EducationalSubjectsSourceInterface
 {
     /**
      * Educational levels.
@@ -65,11 +65,11 @@ class EducationalSubjectsSource extends AbstractApi implements EducationalSubjec
      */
     public function getEducationalSubjectByUrl(string $url): EducationalSubjectInterface
     {
-        $this->assertBaseUrl($url);
+        $this->assertApiBaseUrl($url);
         $levelCodeValue = $this->getEducationalLevelCodeByUrl($url);
         return new OphEperusteetEducationalSubject(
-            $this->apiGet(substr($url, strlen($this->apiBaseUrl))),
-            $this->apiBaseUrl,
+            $this->apiGet(substr($url, strlen($this->getApiBaseUrl()))),
+            $this->getApiBaseUrl(),
             $levelCodeValue,
             $this->educationalLevels
         );
@@ -92,7 +92,7 @@ class EducationalSubjectsSource extends AbstractApi implements EducationalSubjec
         foreach ($response as $result) {
             $parent = new OphEperusteetEducationalSubject(
                 $result,
-                $this->apiBaseUrl,
+                $this->getApiBaseUrl(),
                 $levelCodeValue,
                 $educationalLevels
             );

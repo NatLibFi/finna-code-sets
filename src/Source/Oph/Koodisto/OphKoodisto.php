@@ -6,10 +6,20 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\OphKoodistoEducationalSubject;
-use NatLibFi\FinnaCodeSets\Source\AbstractApi;
+use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
 
-class OphKoodisto extends AbstractApi implements OphKoodistoInterface
+class OphKoodisto extends AbstractSource implements OphKoodistoInterface
 {
+    public function __construct(
+        ClientInterface $httpClient,
+        CacheItemPoolInterface $cache,
+        string $apiBaseUrl = OphKoodistoInterface::DEFAULT_API_BASE_URL
+    ) {
+        parent::__construct($httpClient, $cache, $apiBaseUrl);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,7 +54,7 @@ class OphKoodisto extends AbstractApi implements OphKoodistoInterface
     {
         $educationalSubjects = [];
         foreach ($response as $result) {
-            $educationalSubject = new OphKoodistoEducationalSubject($result, $this->apiBaseUrl, $levelCodeValue);
+            $educationalSubject = new OphKoodistoEducationalSubject($result, $this->getApiBaseUrl(), $levelCodeValue);
             $educationalSubjects[$educationalSubject->getId()] = $educationalSubject;
         }
         // @todo Hierarchy

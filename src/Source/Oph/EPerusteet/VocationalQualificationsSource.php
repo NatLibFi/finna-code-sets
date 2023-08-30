@@ -59,7 +59,7 @@ class VocationalQualificationsSource extends AbstractApi implements VocationalQu
         $cacheKey = md5(__METHOD__);
         if (!$this->cacheHasItem($cacheKey)) {
             $units = $this->processApiResponse(
-                $this->apiGet(OphEPerusteet::VOCATIONAL_COMMON_UNITS_API_METHOD),
+                $this->apiGet(OphEPerusteetInterface::VOCATIONAL_COMMON_UNITS_API_METHOD),
                 true
             );
             return $this->cacheSet($cacheKey, $units);

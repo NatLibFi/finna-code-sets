@@ -2,11 +2,12 @@
 
 namespace NatLibFi\FinnaCodeSets\Source;
 
+use GuzzleHttp\Psr7\Request;
 use NatLibFi\FinnaCodeSets\CacheTrait;
-use NatLibFi\FinnaCodeSets\ClientInterface;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
 
 abstract class AbstractApi
 {
@@ -60,7 +61,7 @@ abstract class AbstractApi
         }
         $cacheKey = md5($uri);
         if (!$this->cacheHasItem($cacheKey)) {
-            $response = $this->httpClient->get($uri);
+            $response = $this->httpClient->sendRequest(new Request('GET', $uri));
             return $this->cacheSet($cacheKey, json_decode($response->getBody(), true));
         }
         return $this->cacheGet($cacheKey);

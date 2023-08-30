@@ -2,11 +2,11 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
-use NatLibFi\FinnaCodeSets\ClientInterface;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
 
 class OphEPerusteet implements OphEPerusteetInterface
 {

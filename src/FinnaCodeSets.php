@@ -2,6 +2,7 @@
 
 namespace NatLibFi\FinnaCodeSets;
 
+use GuzzleHttp\Client;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
@@ -15,6 +16,7 @@ use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatio;
 use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatioInterface;
 use NatLibFi\FinnaCodeSets\Utility\EducationalData;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
 
 class FinnaCodeSets implements FinnaCodeSetsInterface
 {
@@ -32,6 +34,19 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
 
     /**
      * FinnaCodeSets constructor.
+     *
+     * @param ClientInterface|null $httpClient
+     *     PSR-18 compliant HTTP Client, or null for default client.
+     * @param CacheItemPoolInterface|null $cache
+     *     PSR-6 compliant caching system, or null for default cache.
+     * @param string $dvvKoodistotApiBaseUrl
+     *     DVV koodistot API base URL (optional).
+     * @param string $ophEPerusteetApiBaseUrl
+     *     OPH ePerusteet API base URL (optional).
+     * @param string $ophKoodistoApiBaseUrl
+     *     OPH Koodisto API base URL (optional).
+     * @param string $ophOrganisaatioApiBaseUrl
+     *     OPH Organisaatio API base URL (optional).
      */
     public function __construct(
         ClientInterface $httpClient = null,
@@ -42,7 +57,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
         string $ophOrganisaatioApiBaseUrl = OphOrganisaatioInterface::DEFAULT_API_BASE_URL
     ) {
         if (null === $httpClient) {
-            $httpClient = new DefaultClient();
+            $httpClient = new Client();
         }
         if (null === $cache) {
             $cache = new DefaultCacheItemPool();

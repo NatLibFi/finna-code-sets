@@ -65,7 +65,7 @@ class DefaultCacheItem implements CacheItemInterface
     /**
      * {@inheritdoc}
      */
-    public function expiresAt(?\DateTimeInterface $expiration): static
+    public function expiresAt($expiration): static
     {
         // Not supported.
         return $this;
@@ -74,7 +74,7 @@ class DefaultCacheItem implements CacheItemInterface
     /**
      * {@inheritdoc}
      */
-    public function expiresAfter(\DateInterval|int|null $time): static
+    public function expiresAfter($time): static
     {
         // Not supported.
         return $this;

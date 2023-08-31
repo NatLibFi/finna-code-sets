@@ -33,6 +33,9 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      *
      * @param ClientInterface|null $httpClient
      *     PSR-18 compliant HTTP Client, or null for default client.
+     *     Note that if using this library in a project that requires Guzzle 6
+     *     you will have to pass a PSR-18 compliant HTTP Client because the
+     *     default client depends on the PSR-18 support in Guzzle 7.
      * @param CacheItemPoolInterface|null $cache
      *     PSR-6 compliant caching system, or null for default cache.
      */

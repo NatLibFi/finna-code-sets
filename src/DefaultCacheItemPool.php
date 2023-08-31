@@ -4,7 +4,6 @@ namespace NatLibFi\FinnaCodeSets;
 
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Cache\InvalidArgumentException;
 
 /**
  * Default PSR-6 cache item pool implementation.
@@ -26,26 +25,15 @@ class DefaultCacheItemPool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
-    public function getItem(string $key): CacheItemInterface
+    public function getItem($key): CacheItemInterface
     {
         return new DefaultCacheItem($key, $this->cache[$key] ?? null, $this->hasItem($key));
     }
 
     /**
-     * Returns a traversable set of cache items.
+     * {@inheritdoc}
      *
-     * @param string[] $keys
-     *   An indexed array of keys of items to retrieve.
-     *
-     * @throws InvalidArgumentException
-     *   If any of the keys in $keys are not a legal value a \Psr\Cache\InvalidArgumentException
-     *   MUST be thrown.
-     *
-     * @return iterable<CacheItemInterface>
-     *   An iterable collection of Cache Items keyed by the cache keys of
-     *   each item. A Cache item will be returned for each key, even if that
-     *   key is not found. However, if no keys are specified then an empty
-     *   traversable MUST be returned instead.
+     * @return array<CacheItemInterface>|\Traversable<CacheItemInterface>
      */
     public function getItems(array $keys = []): iterable
     {
@@ -60,7 +48,7 @@ class DefaultCacheItemPool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
-    public function hasItem(string $key): bool
+    public function hasItem($key): bool
     {
         return array_key_exists($key, $this->cache);
     }
@@ -77,7 +65,7 @@ class DefaultCacheItemPool implements CacheItemPoolInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteItem(string $key): bool
+    public function deleteItem($key): bool
     {
         unset($this->cache[$key]);
         return true;

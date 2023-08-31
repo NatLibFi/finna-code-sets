@@ -6,10 +6,10 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\BasicEducationStudyContents;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\UpperSecondarySchoolStudyContents;
-use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use NatLibFi\FinnaCodeSets\Source\TransversalCompetencesSourceInterface;
 
-class TransversalCompetencesSource extends AbstractSource implements TransversalCompetencesSourceInterface
+class TransversalCompetencesSource extends AbstractApiSource implements TransversalCompetencesSourceInterface
 {
     /**
      * {@inheritdoc}

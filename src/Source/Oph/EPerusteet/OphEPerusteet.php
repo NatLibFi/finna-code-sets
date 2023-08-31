@@ -70,11 +70,21 @@ class OphEPerusteet implements OphEPerusteetInterface
      */
     public function getEducationalSubjectByUrl(string $url): EducationalSubjectInterface
     {
-        try {
+        if ($this->educationalSubjects->isSupportedEducationalSubjectUrl($url)) {
             return $this->educationalSubjects->getEducationalSubjectByUrl($url);
-        } catch (NotSupportedException) {
+        } elseif ($this->vocationalQualifications->isSupportedEducationalSubjectUrl($url)) {
+            return $this->vocationalQualifications->getEducationalSubjectByUrl($url);
         }
-        return $this->vocationalQualifications->getEducationalSubjectByUrl($url);
+        throw new NotSupportedException($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedEducationalSubjectUrl(string $url): bool
+    {
+        return $this->educationalSubjects->isSupportedEducationalSubjectUrl($url)
+            || $this->vocationalQualifications->isSupportedEducationalSubjectUrl($url);
     }
 
     /**

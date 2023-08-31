@@ -63,6 +63,16 @@ interface HierarchicalObjectInterface
     public function getChildren(): array;
 
     /**
+     * Is there a child with this id?
+     *
+     * @param string $id
+     *     Child ID
+     *
+     * @return bool
+     */
+    public function hasChild(string $id): bool;
+
+    /**
      * Get child.
      *
      * @param string $id
@@ -81,10 +91,9 @@ interface HierarchicalObjectInterface
      *     Descendant ID
      *
      * @return HierarchicalObjectInterface
-     *
-     * @throws NotFoundException if the descendant does not exist
+     *     Returns null if the descendant does not exist
      */
-    public function getDescendant(string $id): HierarchicalObjectInterface;
+    public function getDescendant(string $id): ?HierarchicalObjectInterface;
 
     /**
      * Add child.

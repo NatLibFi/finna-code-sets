@@ -3,11 +3,11 @@
 namespace NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio;
 
 use NatLibFi\FinnaCodeSets\Model\Organisation\Organisation;
-use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 
-class OphOrganisaatio extends AbstractSource implements OphOrganisaatioInterface
+class OphOrganisaatio extends AbstractApiSource implements OphOrganisaatioInterface
 {
     public function __construct(
         ClientInterface $httpClient,

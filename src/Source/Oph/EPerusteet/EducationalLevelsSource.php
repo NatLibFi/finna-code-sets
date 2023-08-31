@@ -4,11 +4,11 @@ namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\OphEPerusteetEducationalLevel;
-use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use NatLibFi\FinnaCodeSets\Source\EducationalLevelsSourceInterface;
 use NatLibFi\FinnaCodeSets\Utility\Assert;
 
-class EducationalLevelsSource extends AbstractSource implements EducationalLevelsSourceInterface
+class EducationalLevelsSource extends AbstractApiSource implements EducationalLevelsSourceInterface
 {
     /**
      * {@inheritdoc}

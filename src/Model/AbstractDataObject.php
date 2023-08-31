@@ -124,7 +124,7 @@ abstract class AbstractDataObject implements DataObjectInterface
     {
         try {
             return $this->getCodeValue();
-        } catch (MissingValueException) {
+        } catch (ExceptionInterface) {
         }
         try {
             return $this->getPrefLabel(DataObjectInterface::LANGUAGE_FINNISH);

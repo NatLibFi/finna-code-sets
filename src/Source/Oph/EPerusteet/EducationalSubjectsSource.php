@@ -6,12 +6,12 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\OphEperusteetEducationalSubject;
-use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 
-class EducationalSubjectsSource extends AbstractSource implements EducationalSubjectsSourceInterface
+class EducationalSubjectsSource extends AbstractApiSource implements EducationalSubjectsSourceInterface
 {
     /**
      * Educational levels.
@@ -73,6 +73,20 @@ class EducationalSubjectsSource extends AbstractSource implements EducationalSub
             $levelCodeValue,
             $this->educationalLevels
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedEducationalSubjectUrl(string $url): bool
+    {
+        if (
+            str_starts_with($url, $this->getApiBaseUrl())
+            && ($this->isBasicEducationUrl($url) || $this->isUpperSecondarySchoolUrl($url))
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**

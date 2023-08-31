@@ -72,36 +72,34 @@ class EducationalData
      * @param ?array<HierarchicalObjectInterface> $educationalLevels
      *     Array of educational levels to search from
      *
-     * @return EducationalLevelInterface
+     * @return ?EducationalLevelInterface
+     *     Returns null if the level was not found
      *
-     * @throws NotFoundException
+     * @throws MissingValueException
      * @throws UnexpectedValueException
      */
     public function getEducationalLevelByCodeValue(
         string $levelCodeValue,
         ?array $educationalLevels = null
-    ): EducationalLevelInterface {
+    ): ?EducationalLevelInterface {
         if (null === $educationalLevels) {
             $educationalLevels = $this->codeSets->getEducationalLevels();
         }
         foreach ($educationalLevels as $level) {
             $level = Assert::educationalLevel($level);
-            try {
-                if ($level->getCodeValue() === $levelCodeValue) {
-                    return $level;
-                }
-            } catch (MissingValueException) {
+            if ($level->getCodeValue() === $levelCodeValue) {
+                return $level;
             }
-            try {
-                return $this->getEducationalLevelByCodeValue($levelCodeValue, $level->getChildren());
-            } catch (NotFoundException) {
+            $child = $this->getEducationalLevelByCodeValue($levelCodeValue, $level->getChildren());
+            if (null !== $child) {
+                return $child;
             }
-            try {
-                return $this->getEducationalLevelByCodeValue($levelCodeValue, $level->getEquivalentLevels());
-            } catch (NotFoundException) {
+            $equivalent = $this->getEducationalLevelByCodeValue($levelCodeValue, $level->getEquivalentLevels());
+            if (null !== $equivalent) {
+                return $equivalent;
             }
         }
-        throw new NotFoundException($levelCodeValue);
+        return null;
     }
 
     /**
@@ -113,17 +111,17 @@ class EducationalData
      * @param ?array<HierarchicalObjectInterface> $educationalLevels
      *     Array of educational levels to search from
      *
-     * @return EducationalLevelInterface
+     * @return ?EducationalLevelInterface
+     *     Returns null if the level was not found
      *
      * @throws MissingValueException
-     * @throws NotFoundException
      * @throws NotSupportedException
      * @throws UnexpectedValueException
      */
     public function getEducationalLevelByUrl(
         string $url,
         ?array $educationalLevels = null
-    ): EducationalLevelInterface {
+    ): ?EducationalLevelInterface {
         if (null === $educationalLevels) {
             $educationalLevels = $this->codeSets->getEducationalLevels();
         }
@@ -132,16 +130,16 @@ class EducationalData
             if ($level->getUri() === $url) {
                 return $level;
             }
-            try {
-                return $this->getEducationalLevelByUrl($url, $level->getChildren());
-            } catch (NotFoundException) {
+            $child = $this->getEducationalLevelByUrl($url, $level->getChildren());
+            if (null !== $child) {
+                return $child;
             }
-            try {
-                return $this->getEducationalLevelByUrl($url, $level->getEquivalentLevels());
-            } catch (NotFoundException) {
+            $equivalent = $this->getEducationalLevelByUrl($url, $level->getEquivalentLevels());
+            if (null !== $equivalent) {
+                return $equivalent;
             }
         }
-        throw new NotFoundException($url);
+        return null;
     }
 
     /**
@@ -232,19 +230,18 @@ class EducationalData
         EducationalSubjectInterface|EducationalLevelInterface $subjectOrLevel
     ): StudyContentsInterface|StudyObjectiveInterface {
         if ($subjectOrLevel instanceof EducationalSubjectInterface) {
-            try {
-                return Assert::studyContents(
-                    $subjectOrLevel->getStudyContents()->getDescendant($id)
-                );
-            } catch (NotFoundException) {
+            if (null !== ($contents = $subjectOrLevel->getStudyContents()->getDescendant($id))) {
+                return Assert::studyContents($contents);
             }
-            return Assert::studyObjective(
-                $subjectOrLevel->getStudyObjectives()->getDescendant($id)
-            );
+            if (null !== ($objective = $subjectOrLevel->getStudyObjectives()->getDescendant($id))) {
+                return Assert::studyObjective($objective);
+            }
         }
-        return Assert::studyContents(
-            $this->getTransversalCompetences($subjectOrLevel)->getDescendant($id)
-        );
+        $subjectOrLevel = Assert::educationalLevel($subjectOrLevel);
+        if (null !== ($competence = $this->getTransversalCompetences($subjectOrLevel)->getDescendant($id))) {
+            return Assert::studyContents($competence);
+        }
+        throw (new NotFoundException($id))->setValue($subjectOrLevel);
     }
 
     /**
@@ -266,12 +263,10 @@ class EducationalData
         string $id,
         string $url
     ): StudyContentsInterface|StudyObjectiveInterface {
-        try {
-            // Try to get educational subject.
+        if ($this->codeSets->isSupportedEducationalSubjectUrl($url)) {
             $subjectOrLevel = $this->codeSets->getEducationalSubjectByUrl($url);
-        } catch (NotSupportedException) {
-            // Try to get educational level.
-            $subjectOrLevel = $this->getEducationalLevelByUrl($url);
+        } elseif (null == ($subjectOrLevel = $this->getEducationalLevelByUrl($url))) {
+            throw new NotSupportedException($url);
         }
         return $this->getStudyContentsOrObjectiveById($id, $subjectOrLevel);
     }
@@ -307,8 +302,9 @@ class EducationalData
     ): array {
         $data = [];
         foreach ($educationalLevels as $codeValue => $url) {
-            $data[EducationalData::EDUCATIONAL_LEVELS][]
-                = $this->getEducationalLevelByCodeValue($codeValue);
+            if (null !== ($level = $this->getEducationalLevelByCodeValue($codeValue))) {
+                $data[EducationalData::EDUCATIONAL_LEVELS][] = $level;
+            }
         }
         foreach ($educationalSubjects as $id => $url) {
             $subject = $this->getEducationalSubjectByIdAndUrl($id, $url);
@@ -586,28 +582,5 @@ class EducationalData
             }
         }
         return $labels;
-    }
-
-    /**
-     * Find a descendant from an array of hierarchical objects.
-     *
-     * @param string $id ID
-     *     Descendant ID
-     * @param array<HierarchicalObjectInterface> $objects
-     *     Array of hierarchical objects to search from
-     *
-     * @return HierarchicalObjectInterface
-     *
-     * @throws NotFoundException
-     */
-    public static function findDescendant(string $id, array $objects): HierarchicalObjectInterface
-    {
-        foreach ($objects as $object) {
-            try {
-                return $object->getDescendant($id);
-            } catch (NotFoundException) {
-            }
-        }
-        throw new NotFoundException($id);
     }
 }

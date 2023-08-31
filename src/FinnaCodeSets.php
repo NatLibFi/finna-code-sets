@@ -127,6 +127,14 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     /**
      * {@inheritdoc}
      */
+    public function isSupportedEducationalSubjectUrl(string $url): bool
+    {
+        return $this->ophEPerusteet->isSupportedEducationalSubjectUrl($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getLicences(): array
     {
         return $this->dvvKoodistot->getLicences();

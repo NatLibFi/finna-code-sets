@@ -33,4 +33,13 @@ interface EducationalSubjectsSourceInterface
      * @throws NotSupportedException
      */
     public function getEducationalSubjectByUrl(string $url): EducationalSubjectInterface;
+
+    /**
+     * Is this an educational subject URL supported by this source?
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    public function isSupportedEducationalSubjectUrl(string $url): bool;
 }

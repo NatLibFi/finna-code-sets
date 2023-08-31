@@ -9,11 +9,11 @@ use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalQualification\VocationalQualification;
 use NatLibFi\FinnaCodeSets\Model\VocationalQualification\VocationalQualificationInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalUnit\VocationalUnit;
-use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use NatLibFi\FinnaCodeSets\Source\VocationalQualificationsSourceInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 
-class VocationalQualificationsSource extends AbstractSource implements VocationalQualificationsSourceInterface
+class VocationalQualificationsSource extends AbstractApiSource implements VocationalQualificationsSourceInterface
 {
     /**
      * {@inheritdoc}
@@ -110,6 +110,20 @@ class VocationalQualificationsSource extends AbstractSource implements Vocationa
         );
         $this->setVocationalQualificationUnits($qualification);
         return $qualification;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedEducationalSubjectUrl(string $url): bool
+    {
+        if (
+            str_starts_with($url, $this->getApiBaseUrl())
+            && ($this->isVocationalQualificationUrl($url) || $this->isVocationalCommonUnitsUrl($url))
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**

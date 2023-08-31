@@ -9,7 +9,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 
-abstract class AbstractSource implements SourceInterface
+abstract class AbstractApiSource implements ApiSourceInterface
 {
     use CacheTrait;
 
@@ -57,9 +57,15 @@ abstract class AbstractSource implements SourceInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Assert base URL.
+     *
+     * @param string $url
+     *
+     * @return string
+     *
+     * @throws NotSupportedException
      */
-    public function assertApiBaseUrl(string $url): string
+    protected function assertApiBaseUrl(string $url): string
     {
         if (!str_starts_with($url, $this->getApiBaseUrl())) {
             throw new NotSupportedException('API URL ' . $url);

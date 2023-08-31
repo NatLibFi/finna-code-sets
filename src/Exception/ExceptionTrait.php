@@ -30,7 +30,7 @@ trait ExceptionTrait
     /**
      * {@inheritdoc}
      */
-    public function setValue(mixed $value): ExceptionInterface
+    public function setValue(mixed $value): self
     {
         $this->value = $value;
         return $this;

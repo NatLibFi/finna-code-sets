@@ -6,11 +6,11 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\OphKoodistoEducationalSubject;
-use NatLibFi\FinnaCodeSets\Source\AbstractSource;
+use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 
-class OphKoodisto extends AbstractSource implements OphKoodistoInterface
+class OphKoodisto extends AbstractApiSource implements OphKoodistoInterface
 {
     public function __construct(
         ClientInterface $httpClient,
@@ -41,6 +41,15 @@ class OphKoodisto extends AbstractSource implements OphKoodistoInterface
     {
         // @todo Implement getEducationalSubjectByUrl() method.
         throw new NotSupportedException($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedEducationalSubjectUrl(string $url): bool
+    {
+        // @todo Implement getEducationalSubjectByUrl() method.
+        return false;
     }
 
     /**

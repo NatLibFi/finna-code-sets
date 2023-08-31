@@ -109,6 +109,14 @@ trait HierarchicalObjectTrait
     /**
      * {@inheritdoc}
      */
+    public function hasChild(string $id): bool
+    {
+        return isset($this->children[$id]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getChild(string $id): HierarchicalObjectInterface
     {
         if (!isset($this->children[$id])) {
@@ -120,19 +128,17 @@ trait HierarchicalObjectTrait
     /**
      * {@inheritdoc}
      */
-    public function getDescendant(string $id): HierarchicalObjectInterface
+    public function getDescendant(string $id): ?HierarchicalObjectInterface
     {
-        try {
+        if ($this->hasChild($id)) {
             return $this->getChild($id);
-        } catch (NotFoundException) {
         }
         foreach ($this->children as $child) {
-            try {
-                return $child->getDescendant($id);
-            } catch (NotFoundException) {
+            if (null !== ($descendant = $child->getDescendant($id))) {
+                return $descendant;
             }
         }
-        throw new NotFoundException('Hierarchical object descendant ' . $id);
+        return null;
     }
 
     /**
@@ -140,14 +146,9 @@ trait HierarchicalObjectTrait
      */
     public function addChild(HierarchicalObjectInterface $child): void
     {
-        // Early exit.
-        try {
-            if ($child === $this->getChild($child->getId())) {
-                // Already a child.
-                return;
-            }
-        } catch (NotFoundException) {
-            // This is the expected case.
+        if ($this->hasChild($child->getId()) && $child === $this->getChild($child->getId())) {
+            // Already a child.
+            return;
         }
 
         // Verify that the child's hierarchy level is correct in relation to this

@@ -2,6 +2,7 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
+use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Exception\ValueNotSetException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
@@ -177,7 +178,8 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
      * @return void
      *
      * @throws ClientExceptionInterface
-     * @throws ValueNotSetException
+     * @throws MissingValueException
+     * @throws NotSupportedException
      */
     protected function setVocationalQualificationUnits(VocationalQualification $qualification): void
     {
@@ -198,10 +200,15 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
      * @param bool $commonUnits
      *
      * @return array<VocationalUnit>
+     *
+     * @throws MissingValueException
      */
     protected function processApiResponse(array $response, bool $commonUnits = false): array
     {
         $units = [];
+        if (!is_array($response['tutkinnonOsat'] ?? null)) {
+            throw new MissingValueException('tutkinnonOsat');
+        }
         foreach ($response['tutkinnonOsat'] as $data) {
             $unit = new VocationalUnit(
                 $data,
@@ -211,6 +218,10 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
                 $commonUnits
             );
             $unit->setSelectable(!$commonUnits);
+
+            if (!is_array($data['osaAlueet'] ?? null)) {
+                throw new MissingValueException('osaAlueet');
+            }
             foreach ($data['osaAlueet'] as $childData) {
                 $unit->addChild(
                     new VocationalUnit(

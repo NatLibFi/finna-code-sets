@@ -2,6 +2,7 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio;
 
+use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
 use NatLibFi\FinnaCodeSets\Model\Organisation\Organisation;
 use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use Psr\Cache\CacheItemPoolInterface;
@@ -32,6 +33,9 @@ class OphOrganisaatio extends AbstractApiSource implements OphOrganisaatioInterf
         );
         // Create objects from response.
         $organisations = [];
+        if (!is_array($response['organisaatiot'] ?? null)) {
+            throw new MissingValueException('organisaatiot');
+        }
         foreach ($response['organisaatiot'] as $result) {
             $organisation = new Organisation($result, $this->getApiBaseUrl());
             $organisations[$organisation->getId()] = $organisation;

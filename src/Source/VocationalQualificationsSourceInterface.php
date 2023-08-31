@@ -2,6 +2,7 @@
 
 namespace NatLibFi\FinnaCodeSets\Source;
 
+use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
 use NatLibFi\FinnaCodeSets\Model\VocationalQualification\VocationalQualificationInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalUnit\VocationalUnitInterface;
 
@@ -41,6 +42,8 @@ interface VocationalQualificationsSourceInterface extends EducationalSubjectsSou
      * Get vocational common units.
      *
      * @return array<VocationalUnitInterface>
+     *
+     * @throws MissingValueException
      */
     public function getVocationalCommonUnits(): array;
 }

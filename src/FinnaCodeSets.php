@@ -68,7 +68,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     /**
      * {@inheritdoc}
      */
-    public function educationalData(): EducationalData
+    public function getEducationalData(): EducationalData
     {
         return $this->educationalData;
     }

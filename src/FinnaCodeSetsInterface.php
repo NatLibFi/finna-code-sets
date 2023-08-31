@@ -31,5 +31,5 @@ interface FinnaCodeSetsInterface extends
      *
      * @return EducationalData
      */
-    public function educationalData(): EducationalData;
+    public function getEducationalData(): EducationalData;
 }

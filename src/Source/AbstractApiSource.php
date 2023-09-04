@@ -4,6 +4,7 @@ namespace NatLibFi\FinnaCodeSets\Source;
 
 use GuzzleHttp\Psr7\Request;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
+use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -89,6 +90,7 @@ abstract class AbstractApiSource implements ApiSourceInterface
      *   The response as an array.
      *
      * @throws ClientExceptionInterface
+     * @throws UnexpectedValueException
      */
     protected function apiGet(string $method, array|object $query = []): array
     {
@@ -99,7 +101,10 @@ abstract class AbstractApiSource implements ApiSourceInterface
         $item = $this->cache->getItem(md5($uri));
         if (!$item->isHit()) {
             $response = $this->httpClient->sendRequest(new Request('GET', $uri));
-            $this->cache->save($item->set(json_decode($response->getBody(), true)));
+            if (null === ($json = json_decode($response->getBody(), true))) {
+                throw new UnexpectedValueException('Unable to decode API response');
+            }
+            $this->cache->save($item->set($json));
         }
         return $item->get();
     }

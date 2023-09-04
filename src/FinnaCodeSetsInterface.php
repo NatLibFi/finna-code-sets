@@ -9,7 +9,6 @@ use NatLibFi\FinnaCodeSets\Source\OrganisationsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\TransversalCompetencesSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\VocationalQualificationsSourceInterface;
 use NatLibFi\FinnaCodeSets\Utility\EducationalData;
-use Psr\Cache\CacheItemPoolInterface;
 
 interface FinnaCodeSetsInterface extends
     EducationalLevelsSourceInterface,
@@ -19,13 +18,6 @@ interface FinnaCodeSetsInterface extends
     TransversalCompetencesSourceInterface,
     VocationalQualificationsSourceInterface
 {
-    /**
-     * Get cache.
-     *
-     * @return CacheItemPoolInterface
-     */
-    public function getCache(): CacheItemPoolInterface;
-
     /**
      * Return educational data utility class instance.
      *

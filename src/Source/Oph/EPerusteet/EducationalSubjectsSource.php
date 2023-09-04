@@ -35,8 +35,8 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
      */
     public function getEducationalSubjects(string $levelCodeValue): array
     {
-        $cacheKey = md5(__METHOD__ . '|' . $levelCodeValue);
-        if (!$this->cacheHasItem($cacheKey)) {
+        $item = $this->cache->getItem(md5(__METHOD__ . '|' . $levelCodeValue));
+        if (!$item->isHit()) {
             switch ($levelCodeValue) {
                 case EducationalLevelInterface::BASIC_EDUCATION:
                     $educationalSubjects = $this->processApiResponse(
@@ -55,9 +55,9 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
                 default:
                     throw NotSupportedException::forEducationalLevel($levelCodeValue);
             }
-            return $this->cacheSet($cacheKey, $educationalSubjects);
+            $this->cache->save($item->set($educationalSubjects));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 
     /**

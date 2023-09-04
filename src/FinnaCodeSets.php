@@ -16,7 +16,7 @@ use Psr\Http\Client\ClientInterface;
 
 class FinnaCodeSets implements FinnaCodeSetsInterface
 {
-    use CacheTrait;
+    protected CacheItemPoolInterface $cache;
 
     protected DvvKoodistot $dvvKoodistot;
 
@@ -60,14 +60,6 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     /**
      * {@inheritdoc}
      */
-    public function getCache(): CacheItemPoolInterface
-    {
-        return $this->cache;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getEducationalData(): EducationalData
     {
         return $this->educationalData;
@@ -78,15 +70,15 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function getEducationalLevels(): array
     {
-        $cacheKey = md5(__METHOD__);
-        if (!$this->cacheHasItem($cacheKey)) {
+        $item = $this->cache->getItem(md5(__METHOD__));
+        if (!$item->isHit()) {
             $educationalLevels = $this->dvvKoodistot->getEducationalLevels();
             foreach ($educationalLevels as $educationalLevel) {
                 $this->addEquivalentEducationalLevels($educationalLevel);
             }
-            return $this->cacheSet($cacheKey, $educationalLevels);
+            $this->cache->save($item->set($educationalLevels));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 
     /**

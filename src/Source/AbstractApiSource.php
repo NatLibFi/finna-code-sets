@@ -3,7 +3,6 @@
 namespace NatLibFi\FinnaCodeSets\Source;
 
 use GuzzleHttp\Psr7\Request;
-use NatLibFi\FinnaCodeSets\CacheTrait;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -11,14 +10,19 @@ use Psr\Http\Client\ClientInterface;
 
 abstract class AbstractApiSource implements ApiSourceInterface
 {
-    use CacheTrait;
-
     /**
      * HTTP client.
      *
      * @var ClientInterface
      */
     protected ClientInterface $httpClient;
+
+    /**
+     * Cache.
+     *
+     * @var CacheItemPoolInterface
+     */
+    protected CacheItemPoolInterface $cache;
 
     /**
      * API base URL.
@@ -92,11 +96,11 @@ abstract class AbstractApiSource implements ApiSourceInterface
         if (!empty($query)) {
             $uri .= '?' . http_build_query($query);
         }
-        $cacheKey = md5($uri);
-        if (!$this->cacheHasItem($cacheKey)) {
+        $item = $this->cache->getItem(md5($uri));
+        if (!$item->isHit()) {
             $response = $this->httpClient->sendRequest(new Request('GET', $uri));
-            return $this->cacheSet($cacheKey, json_decode($response->getBody(), true));
+            $this->cache->save($item->set(json_decode($response->getBody(), true)));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 }

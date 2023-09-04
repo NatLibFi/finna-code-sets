@@ -22,7 +22,7 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
     public function getVocationalUpperSecondaryQualifications(bool $includeUnits = true): array
     {
         return $this->getQualifications(
-            __METHOD__,
+            md5(__METHOD__),
             OphEPerusteetInterface::VOCATIONAL_UPPER_SECONDARY_QUALIFICATIONS_API_PARAMETERS,
             $includeUnits
         );
@@ -34,7 +34,7 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
     public function getFurtherVocationalQualifications(bool $includeUnits = true): array
     {
         return $this->getQualifications(
-            __METHOD__,
+            md5(__METHOD__),
             OphEPerusteetInterface::FURTHER_VOCATIONAL_QUALIFICATIONS_API_PARAMETERS,
             $includeUnits
         );
@@ -46,7 +46,7 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
     public function getSpecialistVocationalQualifications(bool $includeUnits = true): array
     {
         return $this->getQualifications(
-            __METHOD__,
+            md5(__METHOD__),
             OphEPerusteetInterface::SPECIALIST_VOCATIONAL_QUALIFICATIONS_API_PARAMETERS,
             $includeUnits
         );
@@ -57,15 +57,15 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
      */
     public function getVocationalCommonUnits(): array
     {
-        $cacheKey = md5(__METHOD__);
-        if (!$this->cacheHasItem($cacheKey)) {
+        $item = $this->cache->getItem(md5(__METHOD__));
+        if (!$item->isHit()) {
             $units = $this->processApiResponse(
                 $this->apiGet(OphEPerusteetInterface::VOCATIONAL_COMMON_UNITS_API_METHOD),
                 true
             );
-            return $this->cacheSet($cacheKey, $units);
+            $this->cache->save($item->set($units));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 
     /**
@@ -76,19 +76,18 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
         if ($levelCodeValue !== EducationalLevelInterface::VOCATIONAL_EDUCATION) {
             throw NotSupportedException::forEducationalLevel($levelCodeValue);
         }
-        $cacheKey = md5(__METHOD__);
-        if (!$this->cacheHasItem($cacheKey)) {
-            return $this->cacheSet(
-                $cacheKey,
+        $item = $this->cache->getItem(md5(__METHOD__));
+        if (!$item->isHit()) {
+            $this->cache->save($item->set(
                 array_merge(
                     $this->getVocationalUpperSecondaryQualifications(),
                     $this->getFurtherVocationalQualifications(),
                     $this->getSpecialistVocationalQualifications(),
                     $this->getVocationalCommonUnits()
                 )
-            );
+            ));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 
     /**
@@ -141,7 +140,8 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
      */
     protected function getQualifications(string $cacheKey, array $params, bool $includeUnits): array
     {
-        if (!$this->cacheHasItem($cacheKey)) {
+        $item = $this->cache->getItem($cacheKey);
+        if (!$item->isHit()) {
             $params = array_merge(
                 OphEPerusteetInterface::VOCATIONAL_QUALIFICATIONS_API_PARAMETERS,
                 $params
@@ -165,9 +165,9 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
                 }
                 $params['sivu'] += 1;
             }
-            return $this->cacheSet($cacheKey, $qualifications);
+            $this->cache->save($item->set($qualifications));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 
     /**

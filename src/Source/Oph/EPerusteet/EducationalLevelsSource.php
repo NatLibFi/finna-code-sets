@@ -15,17 +15,17 @@ class EducationalLevelsSource extends AbstractApiSource implements EducationalLe
      */
     public function getEducationalLevels(): array
     {
-        $cacheKey = md5(__METHOD__);
-        if (!$this->cacheHasItem($cacheKey)) {
+        $item = $this->cache->getItem(md5(__METHOD__));
+        if (!$item->isHit()) {
             $educationalLevels = [];
             $response = $this->apiGet(OphEPerusteetInterface::BASIC_EDUCATION_EDUCATIONAL_LEVELS_API_METHOD);
             foreach ($response as $result) {
                 $educationalLevel = new OphEPerusteetEducationalLevel($result, $this->getApiBaseUrl());
                 $educationalLevels[$educationalLevel->getId()] = $educationalLevel;
             }
-            return $this->cacheSet($cacheKey, $educationalLevels);
+            $this->cache->save($item->set($educationalLevels));
         }
-        return $this->cacheGet($cacheKey);
+        return $item->get();
     }
 
     /**

@@ -101,10 +101,10 @@ abstract class AbstractApiSource implements ApiSourceInterface
         $item = $this->cache->getItem(md5($uri));
         if (!$item->isHit()) {
             $response = $this->httpClient->sendRequest(new Request('GET', $uri));
-            if (null === ($json = json_decode($response->getBody(), true))) {
+            if (null === ($decoded = json_decode($response->getBody(), true))) {
                 throw new UnexpectedValueException('Unable to decode API response');
             }
-            $this->cache->save($item->set($json));
+            $this->cache->save($item->set($decoded));
         }
         return $item->get();
     }

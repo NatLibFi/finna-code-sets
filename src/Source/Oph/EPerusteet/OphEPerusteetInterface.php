@@ -66,11 +66,11 @@ interface OphEPerusteetInterface extends
     public const VOCATIONAL_UNIT_API_METHOD
         = '/external/peruste/%QUALIFICATION_ID%/tutkinnonOsat/%UNIT_ID%';
 
-    public const VOCATIONAL_COMMON_UNITS_API_METHOD = '/external/peruste/8505691';
+    public const VOCATIONAL_COMMON_UNITS_API_METHOD = '/external/peruste/yto';
 
     public const VOCATIONAL_COMMON_UNIT_API_METHOD
-        = '/external/peruste/8505691/tutkinnonOsat';
+        = '/external/peruste/yto/tutkinnonOsat';
 
     public const VOCATIONAL_COMMON_UNIT_PART_API_METHOD
-        = '/external/peruste/8505691/tutkinnonOsat/%UNIT_ID%/osaAlueet/%UNIT_PART_ID%';
+        = '/external/peruste/yto/tutkinnonOsat/%UNIT_ID%/osaAlueet/%UNIT_PART_ID%';
 }

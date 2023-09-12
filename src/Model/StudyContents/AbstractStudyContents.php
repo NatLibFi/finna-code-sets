@@ -2,11 +2,8 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\StudyContents;
 
-use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use NatLibFi\FinnaCodeSets\Model\AbstractHierarchicalDataObject;
-use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
-use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
-use NatLibFi\FinnaCodeSets\Utility\Assert;
+use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 
 abstract class AbstractStudyContents extends AbstractHierarchicalDataObject implements StudyContentsInterface
 {
@@ -15,11 +12,13 @@ abstract class AbstractStudyContents extends AbstractHierarchicalDataObject impl
      */
     public function getUri(): string
     {
-        $root = Assert::proxyObject($this->getRoot())->getProxiedObject();
-        if ($root instanceof EducationalLevelInterface || $root instanceof EducationalSubjectInterface) {
+        if (($root = $this->getRoot()) instanceof ProxyObjectInterface) {
+            $root = $root->getProxiedObject();
+        }
+        if ($root !== $this) {
             return $root->getUri();
         }
-        throw (new UnexpectedValueException('Not an educational level or subject'))->setValue($root);
+        return parent::getUri();
     }
 
     /**

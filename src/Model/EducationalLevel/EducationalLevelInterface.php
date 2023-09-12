@@ -13,6 +13,7 @@ interface EducationalLevelInterface extends
     HierarchicalObjectInterface
 {
     // Code set levels.
+    public const EARLY_CHILDHOOD_EDUCATION = 'earlyChildhoodEducation';
     public const BASIC_EDUCATION = 'basicEducation';
     public const BASIC_EDUCATION_GRADES_1_2 = 'basicEducationGrades1-2';
     public const BASIC_EDUCATION_GRADES_3_4 = 'basicEducationGrades3-4';

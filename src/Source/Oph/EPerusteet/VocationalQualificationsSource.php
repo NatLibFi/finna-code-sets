@@ -214,7 +214,6 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
                 $data,
                 $this->getApiBaseUrl(),
                 EducationalLevelInterface::VOCATIONAL_EDUCATION,
-                [],
                 $commonUnits
             );
             $unit->setSelectable(!$commonUnits);
@@ -228,7 +227,6 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
                         $childData,
                         $this->getApiBaseUrl(),
                         EducationalLevelInterface::VOCATIONAL_EDUCATION,
-                        [],
                         $commonUnits
                     )
                 );

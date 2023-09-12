@@ -15,6 +15,7 @@ use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSyllabus\EducationalSyllabusInterface;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalProxyDataObject;
+use NatLibFi\FinnaCodeSets\Model\LearningArea\LearningAreaInterface;
 use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyObjective\StudyObjectiveInterface;
@@ -37,12 +38,14 @@ class EducationalData
     public const VOCATIONAL_QUALIFICATIONS = 'vocationalQualifications';
     public const VOCATIONAL_UNITS = 'vocationalUnits';
     public const VOCATIONAL_COMMON_UNITS = 'vocationalCommonUnits';
+    public const LEARNING_AREAS = 'learningAreas';
 
     public const EDUCATIONAL_SUBJECT_LEVEL_KEYS = [
         self::EDUCATIONAL_SUBJECTS,
         self::EDUCATIONAL_SYLLABUSES,
         self::EDUCATIONAL_MODULES,
         self::VOCATIONAL_QUALIFICATIONS,
+        self::LEARNING_AREAS,
     ];
     public const STUDY_CONTENTS_OR_OBJECTIVES_KEYS = [
         self::STUDY_CONTENTS,
@@ -314,6 +317,8 @@ class EducationalData
                 $data[EducationalData::EDUCATIONAL_MODULES][] = $subject;
             } elseif ($subject instanceof  VocationalQualificationInterface) {
                 $data[EducationalData::VOCATIONAL_QUALIFICATIONS][] = $subject;
+            } elseif ($subject instanceof LearningAreaInterface) {
+                $data[EducationalData::LEARNING_AREAS][] = $subject;
             } else {
                 $data[EducationalData::EDUCATIONAL_SUBJECTS][] = $subject;
             }
@@ -518,6 +523,15 @@ class EducationalData
         ) {
             $levelData[EducationalData::VOCATIONAL_COMMON_UNITS]
                 = $educationalData[EducationalData::VOCATIONAL_COMMON_UNITS];
+        }
+
+        // Learning areas.
+        if (
+            EducationalLevelInterface::EARLY_CHILDHOOD_EDUCATION === $levelCodeValue
+            && !empty($educationalData[EducationalData::LEARNING_AREAS])
+        ) {
+            $levelData[EducationalData::LEARNING_AREAS]
+                = $educationalData[EducationalData::LEARNING_AREAS];
         }
 
         return $levelData;

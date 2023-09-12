@@ -3,6 +3,7 @@
 namespace NatLibFi\FinnaCodeSets\Model\EducationalSubject;
 
 use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
+use NatLibFi\FinnaCodeSets\Exception\NotFoundException;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
@@ -20,11 +21,28 @@ use NatLibFi\FinnaCodeSets\Utility\Assert;
 class OphEperusteetEducationalSubject extends AbstractEducationalSubject
 {
     /**
-     * {@inheritdoc}
+     * Educational levels.
+     *
+     * @var array<EducationalLevelInterface>
+     */
+    protected array $educationalLevels;
+
+    /**
+     * OphEperusteetEducationalSubject constructor.
+     *
+     * @param array<mixed> $data
+     *     Data from API
+     * @param string $apiBaseUrl
+     *     Base URL of source API
+     * @param string $levelCodeValue
+     *     Educational level code value
+     * @param array<EducationalLevelInterface> $educationalLevels
+     *     Educational levels
      */
     public function __construct(array $data, string $apiBaseUrl, string $levelCodeValue, array $educationalLevels = [])
     {
-        parent::__construct($data, $apiBaseUrl, $levelCodeValue, $educationalLevels);
+        parent::__construct($data, $apiBaseUrl, $levelCodeValue);
+        $this->educationalLevels = $educationalLevels;
         // Add possible syllabus data as second level in hierarchy.
         if (!empty($syllabus = $data['oppimaarat'] ?? [])) {
             foreach ($syllabus as $syllabusData) {
@@ -136,6 +154,24 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
     /**
      * {@inheritdoc}
      */
+    public function isApplicableToEducationalLevel(string $levelCodeValue): bool
+    {
+        if ($this->getEducationalLevelCodeValue() === $levelCodeValue) {
+            return true;
+        }
+        if ($levelId = EducationalLevelInterface::DVV_KOODISTOT_OPH_PERUSTEET_MAP[$levelCodeValue] ?? false) {
+            foreach ($this->getEducationalLevelsApplicableTo() as $id) {
+                if ($id === $levelId) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getStudyContents(): HierarchicalObjectInterface
     {
         if (null === $this->studyContents) {
@@ -211,5 +247,38 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
             $this->studyObjectives = $proxyRoot;
         }
         return $this->studyObjectives;
+    }
+
+    /**
+     * Get IDs of educational levels this subject is applicable to.
+     *
+     * @return array<string>
+     */
+    protected function getEducationalLevelsApplicableTo(): array
+    {
+        $ids = [];
+        foreach ($this->data['vuosiluokkakokonaisuudet'] ?? [] as $level) {
+            $ids[] = (string)$level['_vuosiluokkaKokonaisuus'];
+        }
+        return $ids;
+    }
+
+    /**
+     * Get educational level.
+     *
+     * @param string $id
+     *
+     * @return EducationalLevelInterface
+     *
+     * @throws NotFoundException
+     */
+    protected function getEducationalLevel(string $id): EducationalLevelInterface
+    {
+        foreach ($this->educationalLevels as $educationalLevel) {
+            if ($educationalLevel->getId() === $id) {
+                return $educationalLevel;
+            }
+        }
+        throw new NotFoundException($id);
     }
 }

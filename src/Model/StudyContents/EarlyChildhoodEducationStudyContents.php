@@ -12,7 +12,6 @@ class EarlyChildhoodEducationStudyContents extends AbstractStudyContents
     public function getUri(): string
     {
         return $this->apiBaseUrl
-            . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
-            . '/' . $this->getId();
+            . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD;
     }
 }

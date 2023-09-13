@@ -27,7 +27,7 @@ class DvvKoodistot extends AbstractApiSource implements DvvKoodistotInterface
         $response = $this->apiGet('/coderegistries/edtech/codeschemes/Licence/codes');
         $licences = [];
         foreach ($response['results'] as $result) {
-            $licences[$result['id']] = new Licence($result);
+            $licences[$result['id']] = new Licence($result, $this->getApiBaseUrl());
         }
         return $licences;
     }
@@ -41,7 +41,7 @@ class DvvKoodistot extends AbstractApiSource implements DvvKoodistotInterface
         // Create objects from response.
         $educationalLevels = [];
         foreach ($response['results'] as $result) {
-            $educationalLevel = new DvvKoodistotEducationalLevel($result);
+            $educationalLevel = new DvvKoodistotEducationalLevel($result, $this->getApiBaseUrl());
             $educationalLevels[$educationalLevel->getId()] = $educationalLevel;
         }
         // Build object hierarchy.

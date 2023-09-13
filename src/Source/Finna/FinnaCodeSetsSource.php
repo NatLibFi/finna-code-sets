@@ -9,6 +9,7 @@ use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\LearningArea\LearningArea;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\EarlyChildhoodEducationStudyContents;
+use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
@@ -104,12 +105,52 @@ class FinnaCodeSetsSource extends AbstractApiSource implements FinnaCodeSetsSour
                 FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
             );
             foreach ($response as $result) {
-                $studyContents = new EarlyChildhoodEducationStudyContents($result, $this->getApiBaseUrl());
+                $studyContents = new EarlyChildhoodEducationStudyContents(
+                    $result,
+                    $this->getApiBaseUrl(),
+                    EducationalLevelInterface::EARLY_CHILDHOOD_EDUCATION
+                );
                 $competences[$studyContents->getId()] = $studyContents;
             }
             $this->cache->save($item->set($competences));
         }
         return $item->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransversalCompetenceByUrl(string $url): StudyContentsInterface
+    {
+        if (!$this->isSupportedTransversalCompetenceUrl($url)) {
+            throw new NotSupportedException('API URL ' . $url);
+        }
+        $id = substr(
+            $url,
+            strlen(
+                $this->getApiBaseUrl()
+                . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
+                . '/'
+            )
+        );
+        $competences = $this->getTransversalCompetences(EducationalLevelInterface::EARLY_CHILDHOOD_EDUCATION);
+        if (isset($competences[$id])) {
+            return $competences[$id];
+        }
+        throw new NotFoundException($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedTransversalCompetenceUrl(string $url): bool
+    {
+        return str_starts_with(
+            $url,
+            $this->getApiBaseUrl()
+            . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
+            . '/'
+        );
     }
 
     /**

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
+use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot\DvvKoodistot;
 use NatLibFi\FinnaCodeSets\Source\Finna\FinnaCodeSetsSource;
 use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteet;
@@ -167,6 +168,28 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
                 return $this->ophEPerusteet->getTransversalCompetences($levelCodeValue);
         }
         throw NotSupportedException::forEducationalLevel($levelCodeValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransversalCompetenceByUrl(string $url): StudyContentsInterface
+    {
+        if ($this->ophEPerusteet->isSupportedTransversalCompetenceUrl($url)) {
+            return $this->ophEPerusteet->getTransversalCompetenceByUrl($url);
+        } elseif ($this->finna->isSupportedTransversalCompetenceUrl($url)) {
+            return $this->finna->getTransversalCompetenceByUrl($url);
+        }
+        throw new NotSupportedException($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedTransversalCompetenceUrl(string $url): bool
+    {
+        return $this->ophEPerusteet->isSupportedTransversalCompetenceUrl($url)
+            || $this->finna->isSupportedTransversalCompetenceUrl($url);
     }
 
     /**

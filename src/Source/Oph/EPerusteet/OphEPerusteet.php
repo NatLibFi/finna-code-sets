@@ -5,6 +5,7 @@ namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
+use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 
@@ -93,6 +94,22 @@ class OphEPerusteet implements OphEPerusteetInterface
     public function getTransversalCompetences(string $levelCodeValue): array
     {
         return $this->transversalCompetences->getTransversalCompetences($levelCodeValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransversalCompetenceByUrl(string $url): StudyContentsInterface
+    {
+        return $this->transversalCompetences->getTransversalCompetenceByUrl($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedTransversalCompetenceUrl(string $url): bool
+    {
+        return $this->transversalCompetences->isSupportedTransversalCompetenceUrl($url);
     }
 
     /**

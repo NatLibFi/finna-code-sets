@@ -14,7 +14,6 @@ use NatLibFi\FinnaCodeSets\Model\EducationalModule\EducationalModuleInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSyllabus\EducationalSyllabusInterface;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
-use NatLibFi\FinnaCodeSets\Model\HierarchicalProxyDataObject;
 use NatLibFi\FinnaCodeSets\Model\LearningArea\LearningAreaInterface;
 use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
@@ -106,46 +105,6 @@ class EducationalData
     }
 
     /**
-     * Find and return an educational level from the provided array or all
-     * educational levels.
-     *
-     * @param string $url
-     *     Educational level URL
-     * @param ?array<HierarchicalObjectInterface> $educationalLevels
-     *     Array of educational levels to search from
-     *
-     * @return ?EducationalLevelInterface
-     *     Returns null if the level was not found
-     *
-     * @throws MissingValueException
-     * @throws NotSupportedException
-     * @throws UnexpectedValueException
-     */
-    public function getEducationalLevelByUrl(
-        string $url,
-        ?array $educationalLevels = null
-    ): ?EducationalLevelInterface {
-        if (null === $educationalLevels) {
-            $educationalLevels = $this->codeSets->getEducationalLevels();
-        }
-        foreach ($educationalLevels as $level) {
-            $level = Assert::educationalLevel($level);
-            if ($level->getUri() === $url) {
-                return $level;
-            }
-            $child = $this->getEducationalLevelByUrl($url, $level->getChildren());
-            if (null !== $child) {
-                return $child;
-            }
-            $equivalent = $this->getEducationalLevelByUrl($url, $level->getEquivalentLevels());
-            if (null !== $equivalent) {
-                return $equivalent;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Set educational subjects for an educational level.
      *
      * @param EducationalLevelInterface $educationalLevel
@@ -162,34 +121,6 @@ class EducationalData
                 $this->codeSets->getEducationalSubjects($educationalLevel->getCodeValue())
             );
         }
-    }
-
-    /**
-     * Get transversal competences for an educational level.
-     *
-     * @param EducationalLevelInterface $educationalLevel
-     *     Educational level
-     *
-     * @return HierarchicalObjectInterface
-     *     Transversal competences hierarchy with the educational level as root.
-     *
-     * @throws MissingValueException
-     * @throws NotFoundException
-     * @throws NotSupportedException
-     * @throws ValueNotSetException
-     */
-    public function getTransversalCompetences(EducationalLevelInterface $educationalLevel): HierarchicalObjectInterface
-    {
-        if (!$educationalLevel->transversalCompetencesSet()) {
-            $educationalLevel->setTransversalCompetences(
-                $this->codeSets->getTransversalCompetences($educationalLevel->getCodeValue())
-            );
-        }
-        $root = new HierarchicalProxyDataObject($educationalLevel, false);
-        foreach ($educationalLevel->getTransversalCompetences() as $transversalCompetence) {
-            $root->addChild($transversalCompetence);
-        }
-        return $root;
     }
 
     /**
@@ -217,47 +148,38 @@ class EducationalData
      *
      * @param string $id
      *     Study contents or study objective ID
-     * @param EducationalSubjectInterface|EducationalLevelInterface $subjectOrLevel
-     *     Educational subject or level
+     * @param EducationalSubjectInterface $educationalSubject
+     *     Educational subject
      *
      * @return StudyContentsInterface|StudyObjectiveInterface
      *
-     * @throws MissingValueException
      * @throws NotFoundException
-     * @throws NotSupportedException
      * @throws UnexpectedValueException
      * @throws ValueNotSetException
      */
     public function getStudyContentsOrObjectiveById(
         string $id,
-        EducationalSubjectInterface|EducationalLevelInterface $subjectOrLevel
+        EducationalSubjectInterface $educationalSubject
     ): StudyContentsInterface|StudyObjectiveInterface {
-        if ($subjectOrLevel instanceof EducationalSubjectInterface) {
-            if (null !== ($contents = $subjectOrLevel->getStudyContents()->getDescendant($id))) {
-                return Assert::studyContents($contents);
-            }
-            if (null !== ($objective = $subjectOrLevel->getStudyObjectives()->getDescendant($id))) {
-                return Assert::studyObjective($objective);
-            }
+        if (null !== ($contents = $educationalSubject->getStudyContents()->getDescendant($id))) {
+            return Assert::studyContents($contents);
         }
-        $subjectOrLevel = Assert::educationalLevel($subjectOrLevel);
-        if (null !== ($competence = $this->getTransversalCompetences($subjectOrLevel)->getDescendant($id))) {
-            return Assert::studyContents($competence);
+        if (null !== ($objective = $educationalSubject->getStudyObjectives()->getDescendant($id))) {
+            return Assert::studyObjective($objective);
         }
-        throw (new NotFoundException($id))->setValue($subjectOrLevel);
+        throw (new NotFoundException($id))->setValue($educationalSubject);
     }
 
     /**
-     * Get study contents or objective by ID and educational subject or level URL.
+     * Get study contents or objective by ID and URL.
      *
      * @param string $id
-     *     Study contents or objective ID
+     *     Study contents, study objective or transversal competence ID
      * @param string $url
-     *     Educational subject or level URL
+     *     Educational subject or transversal competences URL
      *
      * @return StudyContentsInterface|StudyObjectiveInterface
      *
-     * @throws MissingValueException
      * @throws NotFoundException
      * @throws NotSupportedException
      * @throws ValueNotSetException
@@ -267,11 +189,19 @@ class EducationalData
         string $url
     ): StudyContentsInterface|StudyObjectiveInterface {
         if ($this->codeSets->isSupportedEducationalSubjectUrl($url)) {
-            $subjectOrLevel = $this->codeSets->getEducationalSubjectByUrl($url);
-        } elseif (null == ($subjectOrLevel = $this->getEducationalLevelByUrl($url))) {
-            throw new NotSupportedException($url);
+            // Educational subject URLs are expected to contain an ID.
+            return $this->getStudyContentsOrObjectiveById(
+                $id,
+                $this->codeSets->getEducationalSubjectByUrl($url)
+            );
+        } else {
+            // Transversal competences URLs are not expected to contain an ID.
+            $urlWithId = $url . '/' . $id;
+            if ($this->codeSets->isSupportedTransversalCompetenceUrl($urlWithId)) {
+                return $this->codeSets->getTransversalCompetenceByUrl($urlWithId);
+            }
         }
-        return $this->getStudyContentsOrObjectiveById($id, $subjectOrLevel);
+        throw new NotSupportedException($url);
     }
 
     /**
@@ -333,10 +263,12 @@ class EducationalData
                     $data[EducationalData::VOCATIONAL_UNITS][] = $contentsOrObjective;
                 }
             } elseif ($contentsOrObjective instanceof StudyContentsInterface) {
-                $levelOrSubject = Assert::proxyObject($contentsOrObjective->getRoot())->getProxiedObject();
-                if ($levelOrSubject instanceof EducationalLevelInterface) {
+                if (($root = $contentsOrObjective->getRoot()) instanceof ProxyObjectInterface) {
+                    $root = $root->getProxiedObject();
+                }
+                if ($root === $contentsOrObjective) {
                     $data[EducationalData::TRANSVERSAL_COMPETENCES][] = $contentsOrObjective;
-                } elseif ($levelOrSubject instanceof EducationalSubjectInterface) {
+                } elseif ($root instanceof EducationalSubjectInterface) {
                     $data[EducationalData::STUDY_CONTENTS][] = $contentsOrObjective;
                 } else {
                     throw new UnexpectedValueException();
@@ -457,6 +389,7 @@ class EducationalData
      *
      * @return array<mixed>
      *
+     * @throws MissingValueException
      * @throws UnexpectedValueException
      */
     public static function getEducationalLevelData(string $levelCodeValue, array $educationalData): array
@@ -494,22 +427,14 @@ class EducationalData
         $transversalCompetences = [];
         foreach ($educationalData[EducationalData::TRANSVERSAL_COMPETENCES] ?? [] as $transversalCompetence) {
             $transversalCompetence = Assert::studyContents($transversalCompetence);
-            if (
-                ($root = $transversalCompetence->getRoot()) instanceof ProxyObjectInterface
-                && ($level = $root->getProxiedObject()) instanceof EducationalLevelInterface
-            ) {
-                $unmappedValue = (
-                    EducationalLevelInterface::PRIMARY_SCHOOL === $levelCodeValue
-                    || EducationalLevelInterface::LOWER_SECONDARY_SCHOOL === $levelCodeValue
-                )
-                    ? EducationalLevelInterface::BASIC_EDUCATION
-                    : $levelCodeValue;
-                if ($level->getCodeValue() === $unmappedValue) {
-                    $transversalCompetences[$transversalCompetence->getId()] = $transversalCompetence;
-                    break;
-                }
-            } else {
-                throw new UnexpectedValueException();
+            $unmappedValue = (
+                EducationalLevelInterface::PRIMARY_SCHOOL === $levelCodeValue
+                || EducationalLevelInterface::LOWER_SECONDARY_SCHOOL === $levelCodeValue
+            )
+                ? EducationalLevelInterface::BASIC_EDUCATION
+                : $levelCodeValue;
+            if ($transversalCompetence->getEducationalLevelCodeValue() === $unmappedValue) {
+                $transversalCompetences[$transversalCompetence->getId()] = $transversalCompetence;
             }
         }
         if (!empty($transversalCompetences)) {

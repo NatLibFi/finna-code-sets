@@ -8,6 +8,37 @@ use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 abstract class AbstractStudyContents extends AbstractHierarchicalDataObject implements StudyContentsInterface
 {
     /**
+     * Educational level code value.
+     *
+     * @var string
+     */
+    protected string $levelCodeValue;
+
+    /**
+     * AbstractStudyContents constructor.
+     *
+     * @param array<mixed> $data
+     *     Data from API
+     * @param string $apiBaseUrl
+     *     Base URL of source API
+     * @param string $levelCodeValue
+     *     Educational level code value
+     */
+    public function __construct(array $data, string $apiBaseUrl, string $levelCodeValue)
+    {
+        parent::__construct($data, $apiBaseUrl);
+        $this->levelCodeValue = $levelCodeValue;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEducationalLevelCodeValue(): string
+    {
+        return $this->levelCodeValue;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getUri(): string

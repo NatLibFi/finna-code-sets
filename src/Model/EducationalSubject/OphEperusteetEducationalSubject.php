@@ -187,11 +187,19 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
                 foreach ($levelData['sisaltoalueet'] as $contentsData) {
                     switch ($this->getEducationalLevelCodeValue()) {
                         case EducationalLevelInterface::BASIC_EDUCATION:
-                            $proxyLevel->addChild(new BasicEducationStudyContents($contentsData));
+                            $proxyLevel->addChild(new BasicEducationStudyContents(
+                                $contentsData,
+                                $this->apiBaseUrl,
+                                $this->levelCodeValue
+                            ));
                             break;
 
                         case EducationalLevelInterface::UPPER_SECONDARY_SCHOOL:
-                            $proxyLevel->addChild(new UpperSecondarySchoolStudyContents($contentsData));
+                            $proxyLevel->addChild(new UpperSecondarySchoolStudyContents(
+                                $contentsData,
+                                $this->apiBaseUrl,
+                                $this->levelCodeValue
+                            ));
                             break;
 
                         default:
@@ -227,11 +235,17 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
                 foreach ($levelData['tavoitteet'] as $objectiveData) {
                     switch ($this->getEducationalLevelCodeValue()) {
                         case EducationalLevelInterface::BASIC_EDUCATION:
-                            $proxyLevel->addChild(new BasicEducationStudyObjective($objectiveData));
+                            $proxyLevel->addChild(new BasicEducationStudyObjective(
+                                $objectiveData,
+                                $this->apiBaseUrl
+                            ));
                             break;
 
                         case EducationalLevelInterface::UPPER_SECONDARY_SCHOOL:
-                            $proxyLevel->addChild(new UpperSecondarySchoolStudyObjective($objectiveData));
+                            $proxyLevel->addChild(new UpperSecondarySchoolStudyObjective(
+                                $objectiveData,
+                                $this->apiBaseUrl
+                            ));
                             break;
 
                         default:

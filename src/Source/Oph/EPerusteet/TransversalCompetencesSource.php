@@ -33,7 +33,10 @@ class TransversalCompetencesSource extends AbstractApiSource implements Transver
         $competences = [];
         $response = $this->apiGet($method);
         foreach ($response as $result) {
-            $studyContents = new $class($result);
+            $studyContents = new $class(
+                $result,
+                $this->getApiBaseUrl() . $method
+            );
             $competences[$studyContents->getId()] = $studyContents;
         }
         return $competences;

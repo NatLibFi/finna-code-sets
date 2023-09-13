@@ -18,7 +18,7 @@ abstract class AbstractStudyContents extends AbstractHierarchicalDataObject impl
         if ($root !== $this) {
             return $root->getUri();
         }
-        return parent::getUri();
+        return $this->apiBaseUrl ?? parent::getUri();
     }
 
     /**

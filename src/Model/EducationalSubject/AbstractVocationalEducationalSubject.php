@@ -25,22 +25,6 @@ abstract class AbstractVocationalEducationalSubject extends AbstractEducationalS
     /**
      * {@inheritdoc}
      */
-    public function getRootEducationalLevelCodeValue(): string
-    {
-        return EducationalLevelInterface::VOCATIONAL_EDUCATION;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEducationalLevelsApplicableTo(): array
-    {
-        return [EducationalLevelInterface::VOCATIONAL_EDUCATION];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function isApplicableToEducationalLevel(string $levelCodeValue): bool
     {
         return $levelCodeValue === EducationalLevelInterface::VOCATIONAL_EDUCATION;

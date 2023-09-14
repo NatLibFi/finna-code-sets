@@ -17,10 +17,9 @@ class VocationalUnit extends AbstractVocationalEducationalSubject implements Voc
         array $data,
         string $apiBaseUrl,
         string $levelCodeValue,
-        array $educationalLevels = [],
         bool $isCommonUnit = false
     ) {
-        parent::__construct($data, $apiBaseUrl, $levelCodeValue, $educationalLevels);
+        parent::__construct($data, $apiBaseUrl, $levelCodeValue);
         $this->isCommonUnit = $isCommonUnit;
     }
 

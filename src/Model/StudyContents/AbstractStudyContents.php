@@ -2,24 +2,54 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\StudyContents;
 
-use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use NatLibFi\FinnaCodeSets\Model\AbstractHierarchicalDataObject;
-use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
-use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
-use NatLibFi\FinnaCodeSets\Utility\Assert;
+use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 
 abstract class AbstractStudyContents extends AbstractHierarchicalDataObject implements StudyContentsInterface
 {
+    /**
+     * Educational level code value.
+     *
+     * @var string
+     */
+    protected string $levelCodeValue;
+
+    /**
+     * AbstractStudyContents constructor.
+     *
+     * @param array<mixed> $data
+     *     Data from API
+     * @param string $apiBaseUrl
+     *     Base URL of source API
+     * @param string $levelCodeValue
+     *     Educational level code value
+     */
+    public function __construct(array $data, string $apiBaseUrl, string $levelCodeValue)
+    {
+        parent::__construct($data, $apiBaseUrl);
+        $this->levelCodeValue = $levelCodeValue;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEducationalLevelCodeValue(): string
+    {
+        return $this->levelCodeValue;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getUri(): string
     {
-        $root = Assert::proxyObject($this->getRoot())->getProxiedObject();
-        if ($root instanceof EducationalLevelInterface || $root instanceof EducationalSubjectInterface) {
+        if (($root = $this->getRoot()) instanceof ProxyObjectInterface) {
+            $root = $root->getProxiedObject();
+        }
+        if ($root !== $this) {
             return $root->getUri();
         }
-        throw (new UnexpectedValueException('Not an educational level or subject'))->setValue($root);
+        return $this->apiBaseUrl ?? parent::getUri();
     }
 
     /**

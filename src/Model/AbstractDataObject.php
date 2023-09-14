@@ -21,19 +21,19 @@ abstract class AbstractDataObject implements DataObjectInterface
     /**
      * API base URL.
      *
-     * @var ?string
+     * @var string
      */
-    protected ?string $apiBaseUrl;
+    protected string $apiBaseUrl;
 
     /**
      * AbstractDataObject constructor.
      *
      * @param array<mixed> $data
      *     Data from API
-     * @param ?string $apiBaseUrl
+     * @param string $apiBaseUrl
      *     Base URL of source API
      */
-    public function __construct(array $data = [], ?string $apiBaseUrl = null)
+    public function __construct(array $data, string $apiBaseUrl)
     {
         $this->data = $data;
         $this->apiBaseUrl = $apiBaseUrl;

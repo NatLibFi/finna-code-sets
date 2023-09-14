@@ -20,14 +20,6 @@ interface EducationalSubjectInterface extends DataObjectInterface, HierarchicalO
     public function getEducationalLevelCodeValue(): string;
 
     /**
-     * Get IDs of educational levels this educational subject is applicable to.
-     *
-     * @return array<string>
-     *     Educational level IDs
-     */
-    public function getEducationalLevelsApplicableTo(): array;
-
-    /**
      * Is this educational subject applicable to the educational level?
      *
      * @param string $levelCodeValue

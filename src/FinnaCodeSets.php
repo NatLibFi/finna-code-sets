@@ -6,7 +6,9 @@ use GuzzleHttp\Client;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
+use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot\DvvKoodistot;
+use NatLibFi\FinnaCodeSets\Source\Finna\FinnaCodeSetsSource;
 use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteet;
 use NatLibFi\FinnaCodeSets\Source\Oph\Koodisto\OphKoodisto;
 use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatio;
@@ -25,6 +27,8 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     protected OphKoodisto $ophKoodisto;
 
     protected OphOrganisaatio $ophOrganisaatio;
+
+    protected FinnaCodeSetsSource $finna;
 
     protected EducationalData $educationalData;
 
@@ -54,6 +58,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
         $this->ophEPerusteet = new OphEPerusteet($httpClient, $cache);
         $this->ophKoodisto = new OphKoodisto($httpClient, $cache);
         $this->ophOrganisaatio = new OphOrganisaatio($httpClient, $cache);
+        $this->finna = new FinnaCodeSetsSource($httpClient, $cache);
         $this->educationalData = new EducationalData($this);
     }
 
@@ -97,6 +102,9 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     public function getEducationalSubjects(string $levelCodeValue): array
     {
         switch ($levelCodeValue) {
+            case EducationalLevelInterface::EARLY_CHILDHOOD_EDUCATION:
+                return $this->finna->getEducationalSubjects($levelCodeValue);
+
             case EducationalLevelInterface::BASIC_EDUCATION:
             case EducationalLevelInterface::UPPER_SECONDARY_SCHOOL:
             case EducationalLevelInterface::VOCATIONAL_EDUCATION:
@@ -113,7 +121,12 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function getEducationalSubjectByUrl(string $url): EducationalSubjectInterface
     {
-        return $this->ophEPerusteet->getEducationalSubjectByUrl($url);
+        if ($this->ophEPerusteet->isSupportedEducationalSubjectUrl($url)) {
+            return $this->ophEPerusteet->getEducationalSubjectByUrl($url);
+        } elseif ($this->finna->isSupportedEducationalSubjectUrl($url)) {
+            return $this->finna->getEducationalSubjectByUrl($url);
+        }
+        throw new NotSupportedException($url);
     }
 
     /**
@@ -121,7 +134,8 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function isSupportedEducationalSubjectUrl(string $url): bool
     {
-        return $this->ophEPerusteet->isSupportedEducationalSubjectUrl($url);
+        return $this->ophEPerusteet->isSupportedEducationalSubjectUrl($url)
+            || $this->finna->isSupportedEducationalSubjectUrl($url);
     }
 
     /**
@@ -145,7 +159,37 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function getTransversalCompetences(string $levelCodeValue): array
     {
-        return $this->ophEPerusteet->getTransversalCompetences($levelCodeValue);
+        switch ($levelCodeValue) {
+            case EducationalLevelInterface::EARLY_CHILDHOOD_EDUCATION:
+                return $this->finna->getTransversalCompetences($levelCodeValue);
+
+            case EducationalLevelInterface::BASIC_EDUCATION:
+            case EducationalLevelInterface::UPPER_SECONDARY_SCHOOL:
+                return $this->ophEPerusteet->getTransversalCompetences($levelCodeValue);
+        }
+        throw NotSupportedException::forEducationalLevel($levelCodeValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTransversalCompetenceByUrl(string $url): StudyContentsInterface
+    {
+        if ($this->ophEPerusteet->isSupportedTransversalCompetenceUrl($url)) {
+            return $this->ophEPerusteet->getTransversalCompetenceByUrl($url);
+        } elseif ($this->finna->isSupportedTransversalCompetenceUrl($url)) {
+            return $this->finna->getTransversalCompetenceByUrl($url);
+        }
+        throw new NotSupportedException($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedTransversalCompetenceUrl(string $url): bool
+    {
+        return $this->ophEPerusteet->isSupportedTransversalCompetenceUrl($url)
+            || $this->finna->isSupportedTransversalCompetenceUrl($url);
     }
 
     /**

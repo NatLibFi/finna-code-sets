@@ -65,7 +65,9 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
      */
     public function getEducationalSubjectByUrl(string $url): EducationalSubjectInterface
     {
-        $this->assertApiBaseUrl($url);
+        if (!$this->isSupportedEducationalSubjectUrl($url)) {
+            throw new NotSupportedException('API URL ' . $url);
+        }
         $levelCodeValue = $this->getEducationalLevelCodeByUrl($url);
         return new OphEperusteetEducationalSubject(
             $this->apiGet(substr($url, strlen($this->getApiBaseUrl()))),
@@ -80,13 +82,8 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
      */
     public function isSupportedEducationalSubjectUrl(string $url): bool
     {
-        if (
-            str_starts_with($url, $this->getApiBaseUrl())
-            && ($this->isBasicEducationUrl($url) || $this->isUpperSecondarySchoolUrl($url))
-        ) {
-            return true;
-        }
-        return false;
+        return str_starts_with($url, $this->getApiBaseUrl())
+            && $this->isEducationalSubjectUrl($url);
     }
 
     /**
@@ -175,7 +172,9 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
     {
         return (str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_EDUCATIONAL_SUBJECTS_API_METHOD)
             || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_EDUCATIONAL_SUBJECTS_API_METHOD))
-            && !($this->isEducationalSyllabusUrl($url) || $this->isEducationalModuleUrl($url));
+            && !($this->isEducationalSyllabusUrl($url) || $this->isEducationalModuleUrl($url))
+            && !(str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD)
+            || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_TRANSVERSAL_COMPETENCES_API_METHOD));
     }
 
     /**

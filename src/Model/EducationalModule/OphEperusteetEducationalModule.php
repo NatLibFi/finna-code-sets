@@ -36,7 +36,11 @@ class OphEperusteetEducationalModule extends OphEperusteetEducationalSubject imp
             $proxy = new HierarchicalProxyDataObject($this, false);
             foreach ($this->data['sisallot'] as $targetsData) {
                 foreach ($targetsData['sisallot'] as $contentsData) {
-                    $proxy->addChild(new UpperSecondarySchoolStudyContents($contentsData));
+                    $proxy->addChild(new UpperSecondarySchoolStudyContents(
+                        $contentsData,
+                        $this->apiBaseUrl,
+                        $this->levelCodeValue
+                    ));
                 }
             }
             $this->studyContents = $proxy;
@@ -52,7 +56,10 @@ class OphEperusteetEducationalModule extends OphEperusteetEducationalSubject imp
         if (null === $this->studyObjectives) {
             $proxy = new HierarchicalProxyDataObject($this, false);
             foreach ($this->data['tavoitteet']['tavoitteet'] as $objectiveData) {
-                $proxy->addChild(new UpperSecondarySchoolStudyObjective($objectiveData));
+                $proxy->addChild(new UpperSecondarySchoolStudyObjective(
+                    $objectiveData,
+                    $this->apiBaseUrl
+                ));
             }
             $this->studyObjectives = $proxy;
         }

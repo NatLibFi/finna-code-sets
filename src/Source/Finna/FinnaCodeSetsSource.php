@@ -4,7 +4,6 @@ namespace NatLibFi\FinnaCodeSets\Source\Finna;
 
 use NatLibFi\FinnaCodeSets\Exception\NotFoundException;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
-use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\LearningArea\LearningArea;
@@ -151,67 +150,5 @@ class FinnaCodeSetsSource extends AbstractApiSource implements FinnaCodeSetsSour
             . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
             . '/'
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function apiGet(string $method, array|object $query = []): array
-    {
-        // Emulate a real API call.
-        switch ($method) {
-            case FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_LEARNING_AREAS_API_METHOD:
-                return [
-                    [
-                        'id' => 'OA-2022-1',
-                        'prefLabel' => ['fi' => 'Kielten rikas maailma'],
-                    ],
-                    [
-                        'id' => 'OA-2022-2',
-                        'prefLabel' => ['fi' => 'Ilmaisun monet muodot'],
-                    ],
-                    [
-                        'id' => 'OA-2022-3',
-                        'prefLabel' => ['fi' => 'Minä ja meidän yhteisömme'],
-                    ],
-                    [
-                        'id' => 'OA-2022-4',
-                        'prefLabel' => ['fi' => 'Tutkin ja toimin ympäristössäni'],
-                    ],
-                    [
-                        'id' => 'OA-2022-5',
-                        'prefLabel' => ['fi' => 'Kasvan, liikun ja kehityn'],
-                    ],
-                ];
-
-            case FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD:
-                return [
-                    [
-                        'id' => 'LO-2022-1',
-                        'prefLabel' => ['fi' => 'Ajattelu ja oppiminen'],
-                    ],
-                    [
-                        'id' => 'LO-2022-2',
-                        'prefLabel' => ['fi' => 'Kulttuurinen osaaminen, vuorovaikutus ja ilmaisu'],
-                    ],
-                    [
-                        'id' => 'LO-2022-3',
-                        'prefLabel' => ['fi' => 'Itsestä huolehtiminen ja arjen taidot'],
-                    ],
-                    [
-                        'id' => 'LO-2022-4',
-                        'prefLabel' => ['fi' => 'Monilukutaito'],
-                    ],
-                    [
-                        'id' => 'LO-2022-5',
-                        'prefLabel' => ['fi' => 'Digitaalinen osaaminen'],
-                    ],
-                    [
-                        'id' => 'LO-2022-6',
-                        'prefLabel' => ['fi' => 'Osallistuminen ja vaikuttaminen'],
-                    ],
-                ];
-        }
-        throw new UnexpectedValueException('API method: ' . $method);
     }
 }

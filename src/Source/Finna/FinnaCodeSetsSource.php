@@ -147,8 +147,8 @@ class FinnaCodeSetsSource extends AbstractApiSource implements FinnaCodeSetsSour
         return str_starts_with(
             $url,
             $this->getApiBaseUrl()
-            . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
-            . '/'
+                . FinnaCodeSetsSourceInterface::EARLY_CHILDHOOD_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
+                . '/'
         );
     }
 }

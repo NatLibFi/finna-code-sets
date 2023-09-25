@@ -14,6 +14,13 @@ use Psr\Http\Client\ClientInterface;
 class EducationalSubjectsSource extends AbstractApiSource implements EducationalSubjectsSourceInterface
 {
     /**
+     * Educational levels source.
+     *
+     * @var EducationalLevelsSource
+     */
+    protected EducationalLevelsSource $educationalLevelsSource;
+
+    /**
      * Educational levels.
      *
      * @var array<EducationalLevelInterface>
@@ -27,7 +34,7 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
         EducationalLevelsSource $educationalLevelsSource
     ) {
         parent::__construct($httpClient, $cache, $apiBaseUrl);
-        $this->educationalLevels = $educationalLevelsSource->getEducationalLevels();
+        $this->educationalLevelsSource = $educationalLevelsSource;
     }
 
     /**
@@ -73,7 +80,7 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
             $this->apiGet(substr($url, strlen($this->getApiBaseUrl()))),
             $this->getApiBaseUrl(),
             $levelCodeValue,
-            $this->educationalLevels
+            $this->getEducationalLevels()
         );
     }
 
@@ -87,6 +94,19 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
     }
 
     /**
+     * Get educational levels.
+     *
+     * @return array<EducationalLevelInterface>
+     */
+    protected function getEducationalLevels(): array
+    {
+        if (!isset($this->educationalLevels)) {
+            $this->educationalLevels = $this->educationalLevelsSource->getEducationalLevels();
+        }
+        return $this->educationalLevels;
+    }
+
+    /**
      * Process API response.
      *
      * @param array<mixed> $response
@@ -97,7 +117,7 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
     protected function processApiResponse(array $response, string $levelCodeValue): array
     {
         $educationalLevels = $levelCodeValue === EducationalLevelInterface::BASIC_EDUCATION
-            ? $this->educationalLevels
+            ? $this->getEducationalLevels()
             : [];
         $educationalSubjects = [];
         foreach ($response as $result) {

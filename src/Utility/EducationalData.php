@@ -180,6 +180,7 @@ class EducationalData
      *
      * @return StudyContentsInterface|StudyObjectiveInterface
      *
+     * @throws MissingValueException
      * @throws NotFoundException
      * @throws NotSupportedException
      * @throws ValueNotSetException
@@ -189,19 +190,47 @@ class EducationalData
         string $url
     ): StudyContentsInterface|StudyObjectiveInterface {
         if ($this->codeSets->isSupportedEducationalSubjectUrl($url)) {
-            // Educational subject URLs are expected to contain an ID.
             return $this->getStudyContentsOrObjectiveById(
                 $id,
                 $this->codeSets->getEducationalSubjectByUrl($url)
             );
+        } elseif ($this->codeSets->isSupportedVocationalUnitUrl($url)) {
+            return $this->getVocationalCommonUnitById($id);
         } else {
-            // Transversal competences URLs are not expected to contain an ID.
+            // Transversal competence URLs are not expected to contain an ID.
             $urlWithId = $url . '/' . $id;
             if ($this->codeSets->isSupportedTransversalCompetenceUrl($urlWithId)) {
                 return $this->codeSets->getTransversalCompetenceByUrl($urlWithId);
             }
         }
         throw new NotSupportedException($url);
+    }
+
+    /**
+     * Get vocational common unit by ID.
+     *
+     * @param string $id
+     *
+     * @return VocationalUnitInterface
+     *
+     * @throws MissingValueException
+     * @throws NotFoundException
+     * @throws UnexpectedValueException
+     */
+    public function getVocationalCommonUnitById(string $id): VocationalUnitInterface
+    {
+        $commonUnits = $this->codeSets->getVocationalCommonUnits();
+        foreach ($commonUnits as $commonUnit) {
+            if ($commonUnit->getId() === $id) {
+                return $commonUnit;
+            }
+            foreach ($commonUnit->getChildren() as $childUnit) {
+                if ($childUnit->getId() == $id) {
+                    return Assert::vocationalUnit($childUnit);
+                }
+            }
+        }
+        throw new NotFoundException($id);
     }
 
     /**

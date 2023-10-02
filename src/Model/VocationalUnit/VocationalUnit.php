@@ -33,7 +33,7 @@ class VocationalUnit extends AbstractVocationalEducationalSubject implements Voc
             return $root->getUri();
         }
         return $this->apiBaseUrl
-            . OphEPerusteetInterface::VOCATIONAL_COMMON_UNITS_API_METHOD;
+            . OphEPerusteetInterface::VOCATIONAL_COMMON_UNIT_API_METHOD;
     }
 
     /**

@@ -46,4 +46,13 @@ interface VocationalQualificationsSourceInterface extends EducationalSubjectsSou
      * @throws MissingValueException
      */
     public function getVocationalCommonUnits(): array;
+
+    /**
+     * Is this a vocational unit URL supported by this source?
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    public function isSupportedVocationalUnitUrl(string $url): bool;
 }

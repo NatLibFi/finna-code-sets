@@ -15,29 +15,33 @@ interface OphEPerusteetInterface extends
 {
     public const DEFAULT_API_BASE_URL = 'https://virkailija.opintopolku.fi/eperusteet-service/api';
 
+    public const BASIC_EDUCATION_API_BASE_METHOD = '/external/peruste/419550/perusopetus';
+
     public const BASIC_EDUCATION_EDUCATIONAL_LEVELS_API_METHOD
-        = '/external/peruste/419550/perusopetus/vuosiluokkakokonaisuudet';
+        = self::BASIC_EDUCATION_API_BASE_METHOD . '/vuosiluokkakokonaisuudet';
 
     public const BASIC_EDUCATION_EDUCATIONAL_SUBJECTS_API_METHOD
-        = '/external/peruste/419550/perusopetus/oppiaineet';
+        = self::BASIC_EDUCATION_API_BASE_METHOD . '/oppiaineet';
 
     public const BASIC_EDUCATION_EDUCATIONAL_SYLLABUS_API_METHOD
-        = '/external/peruste/419550/perusopetus/oppiaineet/oppimaarat';
+        = self::BASIC_EDUCATION_API_BASE_METHOD . '/oppiaineet/oppimaarat';
 
     public const BASIC_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD
-        = '/external/peruste/419550/perusopetus/laajaalaisetosaamiset';
+        = self::BASIC_EDUCATION_API_BASE_METHOD . '/laajaalaisetosaamiset';
+
+    public const UPPER_SECONDARY_SCHOOL_API_BASE_METHOD = '/external/peruste/6828810/lops2019';
 
     public const UPPER_SECONDARY_SCHOOL_EDUCATIONAL_SUBJECTS_API_METHOD
-        = '/external/peruste/6828810/lops2019/oppiaineet';
+        = self::UPPER_SECONDARY_SCHOOL_API_BASE_METHOD . '/oppiaineet';
 
     public const UPPER_SECONDARY_SCHOOL_EDUCATIONAL_SYLLABUS_API_METHOD
-        = '/external/peruste/6828810/lops2019/oppiaineet/oppimaarat';
+        = self::UPPER_SECONDARY_SCHOOL_API_BASE_METHOD . '/oppiaineet/oppimaarat';
 
     public const UPPER_SECONDARY_SCHOOL_EDUCATIONAL_MODULE_API_METHOD
-        = '/external/peruste/6828810/lops2019/oppiaineet/%SUBJECT_ID%/moduulit/%MODULE_ID%';
+        = self::UPPER_SECONDARY_SCHOOL_API_BASE_METHOD . '/oppiaineet/%SUBJECT_ID%/moduulit/%MODULE_ID%';
 
     public const UPPER_SECONDARY_SCHOOL_TRANSVERSAL_COMPETENCES_API_METHOD
-        = '/external/peruste/6828810/lops2019/laajaAlainenOsaaminen/laajaAlaisetOsaamiset';
+        = self::UPPER_SECONDARY_SCHOOL_API_BASE_METHOD . '/laajaAlainenOsaaminen/laajaAlaisetOsaamiset';
 
     public const VOCATIONAL_QUALIFICATIONS_API_METHOD = '/external/perusteet';
 

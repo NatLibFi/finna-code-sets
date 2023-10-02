@@ -143,4 +143,12 @@ class OphEPerusteet implements OphEPerusteetInterface
     {
         return $this->vocationalQualifications->getVocationalCommonUnits();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedVocationalUnitUrl(string $url): bool
+    {
+        return $this->vocationalQualifications->isSupportedVocationalUnitUrl($url);
+    }
 }

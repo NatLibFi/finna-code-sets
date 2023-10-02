@@ -8,6 +8,7 @@ use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyObjective\StudyObjectiveInterface;
+use NatLibFi\FinnaCodeSets\Model\VocationalUnit\VocationalUnitInterface;
 
 class Assert
 {
@@ -92,6 +93,23 @@ class Assert
     {
         if (!$object instanceof StudyObjectiveInterface) {
             throw (new UnexpectedValueException('Not a study objective'))->setValue($object);
+        }
+        return $object;
+    }
+
+    /**
+     * Assert that the object is an instance of VocationalUnitInterface.
+     *
+     * @param mixed $object
+     *
+     * @return VocationalUnitInterface
+     *
+     * @throws UnexpectedValueException
+     */
+    public static function vocationalUnit(mixed $object): VocationalUnitInterface
+    {
+        if (!$object instanceof VocationalUnitInterface) {
+            throw (new UnexpectedValueException('Not a vocational unit'))->setValue($object);
         }
         return $object;
     }

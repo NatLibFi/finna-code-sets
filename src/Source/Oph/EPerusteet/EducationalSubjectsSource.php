@@ -161,9 +161,7 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
      */
     protected function isBasicEducationUrl(string $url): bool
     {
-        return str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_EDUCATIONAL_LEVELS_API_METHOD)
-            || str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_EDUCATIONAL_SUBJECTS_API_METHOD)
-            || str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD);
+        return str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_API_BASE_METHOD);
     }
 
     /**
@@ -175,10 +173,7 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
      */
     protected function isUpperSecondarySchoolUrl(string $url): bool
     {
-        return str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_EDUCATIONAL_SUBJECTS_API_METHOD)
-            || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_EDUCATIONAL_SYLLABUS_API_METHOD)
-            || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_TRANSVERSAL_COMPETENCES_API_METHOD)
-            || $this->isEducationalModuleUrl($url);
+        return str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_API_BASE_METHOD);
     }
 
     /**
@@ -192,9 +187,7 @@ class EducationalSubjectsSource extends AbstractApiSource implements Educational
     {
         return (str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_EDUCATIONAL_SUBJECTS_API_METHOD)
             || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_EDUCATIONAL_SUBJECTS_API_METHOD))
-            && !($this->isEducationalSyllabusUrl($url) || $this->isEducationalModuleUrl($url))
-            && !(str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD)
-            || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_TRANSVERSAL_COMPETENCES_API_METHOD));
+            && !($this->isEducationalSyllabusUrl($url) || $this->isEducationalModuleUrl($url));
     }
 
     /**

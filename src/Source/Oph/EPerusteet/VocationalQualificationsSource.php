@@ -71,6 +71,15 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
     /**
      * {@inheritdoc}
      */
+    public function isSupportedVocationalUnitUrl(string $url): bool
+    {
+        return str_starts_with($url, $this->getApiBaseUrl())
+            && $this->isVocationalUnitUrl($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getEducationalSubjects(string $levelCodeValue): array
     {
         if ($levelCodeValue !== EducationalLevelInterface::VOCATIONAL_EDUCATION) {
@@ -95,16 +104,11 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
      */
     public function getEducationalSubjectByUrl(string $url): EducationalSubjectInterface
     {
-        $this->assertApiBaseUrl($url);
-        if (
-            !$this->isVocationalQualificationUrl($url)
-            && !$this->isVocationalCommonUnitsUrl($url)
-        ) {
+        if (!$this->isSupportedEducationalSubjectUrl($url)) {
             throw new NotSupportedException('API URL ' . $url);
         }
-        $response = $this->apiGet(substr($url, strlen($this->getApiBaseUrl())));
         $qualification = new VocationalQualification(
-            $response,
+            $this->apiGet(substr($url, strlen($this->getApiBaseUrl()))),
             $this->getApiBaseUrl(),
             EducationalLevelInterface::VOCATIONAL_EDUCATION
         );
@@ -118,7 +122,7 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
     public function isSupportedEducationalSubjectUrl(string $url): bool
     {
         return str_starts_with($url, $this->getApiBaseUrl())
-            && ($this->isVocationalQualificationUrl($url) || $this->isVocationalCommonUnitsUrl($url));
+            && $this->isVocationalQualificationUrl($url);
     }
 
     /**
@@ -183,7 +187,7 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
                 OphEPerusteetInterface::VOCATIONAL_QUALIFICATION_API_METHOD
                     . '/' . $qualification->getId()
             ),
-            $this->isVocationalCommonUnitsUrl($qualification->getUri())
+            $this->isVocationalCommonUnitUrl($qualification->getUri())
         );
         $qualification->addChildren($units);
     }
@@ -241,19 +245,33 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
     protected function isVocationalQualificationUrl(string $url): bool
     {
         return str_contains($url, OphEPerusteetInterface::VOCATIONAL_QUALIFICATION_API_METHOD)
-            && !(str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_TRANSVERSAL_COMPETENCES_API_METHOD)
-            || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_TRANSVERSAL_COMPETENCES_API_METHOD));
+            && !(str_contains($url, OphEPerusteetInterface::BASIC_EDUCATION_API_BASE_METHOD)
+            || str_contains($url, OphEPerusteetInterface::UPPER_SECONDARY_SCHOOL_API_BASE_METHOD))
+            && !$this->isVocationalUnitUrl($url);
     }
 
     /**
-     * Is the URL a vocational common units URL?
+     * Is the URL a vocational unit URL?
      *
      * @param string $url
      *
      * @return bool
      */
-    protected function isVocationalCommonUnitsUrl(string $url): bool
+    protected function isVocationalUnitUrl(string $url): bool
     {
-        return str_contains($url, OphEPerusteetInterface::VOCATIONAL_COMMON_UNITS_API_METHOD);
+        // @todo
+        return str_contains($url, '/tutkinnonOsat');
+    }
+
+    /**
+     * Is the URL a vocational common unit URL?
+     *
+     * @param string $url
+     *
+     * @return bool
+     */
+    protected function isVocationalCommonUnitUrl(string $url): bool
+    {
+        return str_contains($url, OphEPerusteetInterface::VOCATIONAL_COMMON_UNIT_API_METHOD);
     }
 }

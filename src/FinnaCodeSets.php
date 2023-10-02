@@ -223,4 +223,12 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     {
         return $this->ophEPerusteet->getVocationalCommonUnits();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSupportedVocationalUnitUrl(string $url): bool
+    {
+        return $this->ophEPerusteet->isSupportedVocationalUnitUrl($url);
+    }
 }

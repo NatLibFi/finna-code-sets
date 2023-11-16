@@ -8,7 +8,8 @@ use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot\DvvKoodistot;
-use NatLibFi\FinnaCodeSets\Source\Finna\FinnaCodeSetsSource;
+use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna\FinnaCodeSetsSource;
+use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finto\FintoSource;
 use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteet;
 use NatLibFi\FinnaCodeSets\Source\Oph\Koodisto\OphKoodisto;
 use NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio\OphOrganisaatio;
@@ -29,6 +30,8 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     protected OphOrganisaatio $ophOrganisaatio;
 
     protected FinnaCodeSetsSource $finna;
+
+    protected FintoSource $finto;
 
     protected EducationalData $educationalData;
 
@@ -59,6 +62,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
         $this->ophKoodisto = new OphKoodisto($httpClient, $cache);
         $this->ophOrganisaatio = new OphOrganisaatio($httpClient, $cache);
         $this->finna = new FinnaCodeSetsSource($httpClient, $cache);
+        $this->finto = new FintoSource($httpClient, $cache);
         $this->educationalData = new EducationalData($this);
     }
 
@@ -136,6 +140,22 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     {
         return $this->ophEPerusteet->isSupportedEducationalSubjectUrl($url)
             || $this->finna->isSupportedEducationalSubjectUrl($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeywordsIndexLetters(string $langcode): array
+    {
+        return $this->finto->getKeywordsIndexLetters($langcode);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeywordsIndex(string $langcode, string $letter): array
+    {
+        return $this->finto->getKeywordsIndex($langcode, $letter);
     }
 
     /**

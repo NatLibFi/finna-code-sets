@@ -4,6 +4,7 @@ namespace NatLibFi\FinnaCodeSets;
 
 use NatLibFi\FinnaCodeSets\Source\EducationalLevelsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
+use NatLibFi\FinnaCodeSets\Source\KeywordsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\LicencesSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\OrganisationsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\TransversalCompetencesSourceInterface;
@@ -13,6 +14,7 @@ use NatLibFi\FinnaCodeSets\Utility\EducationalData;
 interface FinnaCodeSetsInterface extends
     EducationalLevelsSourceInterface,
     EducationalSubjectsSourceInterface,
+    KeywordsSourceInterface,
     LicencesSourceInterface,
     OrganisationsSourceInterface,
     TransversalCompetencesSourceInterface,

@@ -2,7 +2,7 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\StudyContents;
 
-use NatLibFi\FinnaCodeSets\Source\Finna\FinnaCodeSetsSourceInterface;
+use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna\FinnaCodeSetsSourceInterface;
 
 class EarlyChildhoodEducationStudyContents extends AbstractStudyContents
 {

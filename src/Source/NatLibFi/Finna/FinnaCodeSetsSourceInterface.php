@@ -1,6 +1,6 @@
 <?php
 
-namespace NatLibFi\FinnaCodeSets\Source\Finna;
+namespace NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna;
 
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\TransversalCompetencesSourceInterface;

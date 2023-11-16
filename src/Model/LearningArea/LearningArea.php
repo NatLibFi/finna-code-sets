@@ -3,7 +3,7 @@
 namespace NatLibFi\FinnaCodeSets\Model\LearningArea;
 
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\AbstractEducationalSubject;
-use NatLibFi\FinnaCodeSets\Source\Finna\FinnaCodeSetsSourceInterface;
+use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna\FinnaCodeSetsSourceInterface;
 
 class LearningArea extends AbstractEducationalSubject implements LearningAreaInterface
 {

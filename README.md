@@ -8,6 +8,8 @@ Support library for code sets used in Finna record formats.
 
 The initial version provides support for [LRMI_FI](https://wiki.eduuni.fi/pages/viewpage.action?pageId=222560437) and the following sources:
 
+- Finto
+  - [Keywords](https://finto.fi/yso)
 - DVV Koodistot
     - [Educational levels](http://uri.suomi.fi/codelist/edtech/Koulutusaste)
     - [Licences](http://uri.suomi.fi/codelist/edtech/Licence)

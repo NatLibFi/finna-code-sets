@@ -492,6 +492,29 @@ class EducationalData
     }
 
     /**
+     * Get educational modules for the educational subject from the provided data.
+     *
+     * @param EducationalSubjectInterface $educationalSubject
+     *     Educational subject
+     * @param array<EducationalModuleInterface> $educationalModules
+     *     Educational modules
+     *
+     * @return array<EducationalModuleInterface>
+     */
+    public static function getEducationalModules(
+        EducationalSubjectInterface $educationalSubject,
+        array $educationalModules
+    ): array {
+        $modules = [];
+        foreach ($educationalModules as $educationalModule) {
+            if ($educationalSubject->getId() === $educationalModule->getRoot()->getId()) {
+                $modules[$educationalModule->getId()] = $educationalModule;
+            }
+        }
+        return $modules;
+    }
+
+    /**
      * Get study contents or objectives for the educational subject from the provided
      * data.
      *

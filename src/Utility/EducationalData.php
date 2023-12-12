@@ -40,16 +40,16 @@ class EducationalData
     public const LEARNING_AREAS = 'learningAreas';
 
     public const EDUCATIONAL_SUBJECT_LEVEL_KEYS = [
+        self::LEARNING_AREAS,
         self::EDUCATIONAL_SUBJECTS,
         self::EDUCATIONAL_SYLLABUSES,
         self::EDUCATIONAL_MODULES,
         self::VOCATIONAL_QUALIFICATIONS,
-        self::LEARNING_AREAS,
+        self::VOCATIONAL_UNITS,
     ];
     public const STUDY_CONTENTS_OR_OBJECTIVES_KEYS = [
         self::STUDY_CONTENTS,
         self::STUDY_OBJECTIVES,
-        self::VOCATIONAL_UNITS,
     ];
 
     protected FinnaCodeSets $codeSets;
@@ -136,9 +136,15 @@ class EducationalData
      */
     public function getEducationalSubjectByIdAndUrl(string $id, string $url): EducationalSubjectInterface
     {
-        $subject = $this->codeSets->getEducationalSubjectByUrl($url);
-        if ($subject->getId() !== $id) {
-            $subject = Assert::educationalSubject($subject->getDescendant($id));
+        if ($this->codeSets->isSupportedEducationalSubjectUrl($url)) {
+            $subject = $this->codeSets->getEducationalSubjectByUrl($url);
+            if ($subject->getId() !== $id) {
+                $subject = Assert::educationalSubject($subject->getDescendant($id));
+            }
+        } elseif ($this->codeSets->isSupportedVocationalUnitUrl($url)) {
+            $subject = $this->getVocationalCommonUnitById($id);
+        } else {
+            throw new NotFoundException($url);
         }
         return $subject;
     }
@@ -180,7 +186,6 @@ class EducationalData
      *
      * @return StudyContentsInterface|StudyObjectiveInterface
      *
-     * @throws MissingValueException
      * @throws NotFoundException
      * @throws NotSupportedException
      * @throws ValueNotSetException
@@ -194,8 +199,6 @@ class EducationalData
                 $id,
                 $this->codeSets->getEducationalSubjectByUrl($url)
             );
-        } elseif ($this->codeSets->isSupportedVocationalUnitUrl($url)) {
-            return $this->getVocationalCommonUnitById($id);
         } else {
             // Transversal competence URLs are not expected to contain an ID.
             $urlWithId = $url . '/' . $id;
@@ -274,8 +277,14 @@ class EducationalData
                 $data[EducationalData::EDUCATIONAL_SYLLABUSES][] = $subject;
             } elseif ($subject instanceof EducationalModuleInterface) {
                 $data[EducationalData::EDUCATIONAL_MODULES][] = $subject;
-            } elseif ($subject instanceof  VocationalQualificationInterface) {
+            } elseif ($subject instanceof VocationalQualificationInterface) {
                 $data[EducationalData::VOCATIONAL_QUALIFICATIONS][] = $subject;
+            } elseif ($subject instanceof VocationalUnitInterface) {
+                if ($subject->isCommonUnit()) {
+                    $data[EducationalData::VOCATIONAL_COMMON_UNITS][] = $subject;
+                } else {
+                    $data[EducationalData::VOCATIONAL_UNITS][] = $subject;
+                }
             } elseif ($subject instanceof LearningAreaInterface) {
                 $data[EducationalData::LEARNING_AREAS][] = $subject;
             } else {
@@ -285,13 +294,7 @@ class EducationalData
         foreach ($teaches as $id => $url) {
             $contentsOrObjective
                 = $this->getStudyContentsOrObjectiveByIdAndUrl($id, $url);
-            if ($contentsOrObjective instanceof VocationalUnitInterface) {
-                if ($contentsOrObjective->isCommonUnit()) {
-                    $data[EducationalData::VOCATIONAL_COMMON_UNITS][] = $contentsOrObjective;
-                } else {
-                    $data[EducationalData::VOCATIONAL_UNITS][] = $contentsOrObjective;
-                }
-            } elseif ($contentsOrObjective instanceof StudyContentsInterface) {
+            if ($contentsOrObjective instanceof StudyContentsInterface) {
                 if (($root = $contentsOrObjective->getRoot()) instanceof ProxyObjectInterface) {
                     $root = $root->getProxiedObject();
                 }

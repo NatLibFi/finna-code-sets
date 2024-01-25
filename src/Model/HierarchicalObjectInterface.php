@@ -56,6 +56,13 @@ interface HierarchicalObjectInterface
     public function setParent(?HierarchicalObjectInterface $parent): void;
 
     /**
+     * Does this object have children?
+     *
+     * @return bool
+     */
+    public function hasChildren(): bool;
+
+    /**
      * Get children.
      *
      * @return array<HierarchicalObjectInterface>
@@ -83,6 +90,16 @@ interface HierarchicalObjectInterface
      * @throws NotFoundException if the child does not exist
      */
     public function getChild(string $id): HierarchicalObjectInterface;
+
+    /**
+     * Is there a descendant with this id?
+     *
+     * @param string $id
+     *     Descendant ID
+     *
+     * @return bool
+     */
+    public function hasDescendant(string $id): bool;
 
     /**
      * Get descendant.

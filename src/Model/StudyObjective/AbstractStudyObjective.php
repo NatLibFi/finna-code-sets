@@ -3,12 +3,12 @@
 namespace NatLibFi\FinnaCodeSets\Model\StudyObjective;
 
 use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
-use NatLibFi\FinnaCodeSets\Model\AbstractHierarchicalDataObject;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\AbstractStudyDataObject;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Utility\Assert;
 
-abstract class AbstractStudyObjective extends AbstractHierarchicalDataObject implements StudyObjectiveInterface
+abstract class AbstractStudyObjective extends AbstractStudyDataObject implements StudyObjectiveInterface
 {
     /**
      * {@inheritdoc}

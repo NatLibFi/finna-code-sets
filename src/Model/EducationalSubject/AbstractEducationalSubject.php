@@ -4,17 +4,13 @@ namespace NatLibFi\FinnaCodeSets\Model\EducationalSubject;
 
 use NatLibFi\FinnaCodeSets\Exception\ValueNotSetException;
 use NatLibFi\FinnaCodeSets\Model\AbstractHierarchicalDataObject;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\EducationalDataObjectTrait;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
 
 abstract class AbstractEducationalSubject extends AbstractHierarchicalDataObject implements
     EducationalSubjectInterface
 {
-    /**
-     * Educational level code value.
-     *
-     * @var string
-     */
-    protected string $levelCodeValue;
+    use EducationalDataObjectTrait;
 
     /**
      * Study contents.
@@ -44,14 +40,6 @@ abstract class AbstractEducationalSubject extends AbstractHierarchicalDataObject
     {
         parent::__construct($data, $apiBaseUrl);
         $this->levelCodeValue = $levelCodeValue;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEducationalLevelCodeValue(): string
-    {
-        return $this->levelCodeValue;
     }
 
     /**

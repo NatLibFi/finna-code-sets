@@ -10,6 +10,7 @@ use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalQualification\VocationalQualification;
 use NatLibFi\FinnaCodeSets\Model\VocationalQualification\VocationalQualificationInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalUnit\VocationalUnit;
+use NatLibFi\FinnaCodeSets\Model\VocationalUnitSubject\VocationalUnitSubject;
 use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use NatLibFi\FinnaCodeSets\Source\VocationalQualificationsSourceInterface;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -222,7 +223,7 @@ class VocationalQualificationsSource extends AbstractApiSource implements Vocati
             }
             foreach ($data['osaAlueet'] as $childData) {
                 $unit->addChild(
-                    new VocationalUnit(
+                    new VocationalUnitSubject(
                         $childData,
                         $this->getApiBaseUrl(),
                         EducationalLevelInterface::VOCATIONAL_EDUCATION,

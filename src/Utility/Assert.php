@@ -3,8 +3,12 @@
 namespace NatLibFi\FinnaCodeSets\Utility;
 
 use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\EducationalDataObjectInterface;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\StudyDataObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
+use NatLibFi\FinnaCodeSets\Model\HierarchicalProxyDataObject;
+use NatLibFi\FinnaCodeSets\Model\HierarchicalProxyDataObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyObjective\StudyObjectiveInterface;
@@ -12,6 +16,41 @@ use NatLibFi\FinnaCodeSets\Model\VocationalUnit\VocationalUnitInterface;
 
 class Assert
 {
+    /**
+     * Assert that the object is an instance of EducationalDataObjectInterface.
+     *
+     * @param mixed $object
+     *
+     * @return EducationalDataObjectInterface
+     *
+     * @throws UnexpectedValueException
+     */
+    public static function educationalDataObject(mixed $object): EducationalDataObjectInterface
+    {
+        if (!$object instanceof EducationalDataObjectInterface) {
+            throw (new UnexpectedValueException('Not an educational object'))->setValue($object);
+        }
+        return $object;
+    }
+
+    /**
+     * Assert that the object is an instance of StudyDataObjectInterface.
+     *
+     * @param mixed $object
+     *
+     * @return StudyDataObjectInterface
+     *
+     * @throws UnexpectedValueException
+     */
+    public static function studyDataObject(mixed $object): StudyDataObjectInterface
+    {
+        if (!($object instanceof StudyDataObjectInterface)) {
+            throw (new UnexpectedValueException('Not a study data object'))
+                ->setValue($object);
+        }
+        return $object;
+    }
+
     /**
      * Assert that the object is an instance of EducationalLevelInterface.
      *
@@ -59,6 +98,23 @@ class Assert
     {
         if (!$object instanceof ProxyObjectInterface) {
             throw (new UnexpectedValueException('Not a proxy object'))->setValue($object);
+        }
+        return $object;
+    }
+
+    /**
+     * Assert that the object is an instance of HierarchicalProxyDataObjectInterface.
+     *
+     * @param mixed $object
+     *
+     * @return HierarchicalProxyDataObject
+     *
+     * @throws UnexpectedValueException
+     */
+    public static function hierarchicalProxyDataObject(mixed $object): HierarchicalProxyDataObjectInterface
+    {
+        if (!$object instanceof HierarchicalProxyDataObject) {
+            throw (new UnexpectedValueException('Not a hierarchical proxy data object'))->setValue($object);
         }
         return $object;
     }

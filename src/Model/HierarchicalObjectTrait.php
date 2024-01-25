@@ -101,6 +101,14 @@ trait HierarchicalObjectTrait
     /**
      * {@inheritdoc}
      */
+    public function hasChildren(): bool
+    {
+        return !empty($this->getChildren());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getChildren(): array
     {
         return $this->children;
@@ -123,6 +131,14 @@ trait HierarchicalObjectTrait
             throw new NotFoundException('Hierarchical object child ' . $id);
         }
         return $this->children[$id];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasDescendant(string $id): bool
+    {
+        return null !== $this->getDescendant($id);
     }
 
     /**

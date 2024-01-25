@@ -3,7 +3,6 @@
 namespace NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot;
 
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\DvvKoodistotEducationalLevel;
-use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\Licence\Licence;
 use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use Psr\Cache\CacheItemPoolInterface;
@@ -54,13 +53,5 @@ class DvvKoodistot extends AbstractApiSource implements DvvKoodistotInterface
             }
         }
         return $educationalLevels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addEquivalentEducationalLevels(EducationalLevelInterface $educationalLevel): void
-    {
-        // @todo Implement addEquivalentEducationalLevels() method.
     }
 }

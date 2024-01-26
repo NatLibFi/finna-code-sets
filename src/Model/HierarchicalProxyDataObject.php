@@ -11,9 +11,7 @@ namespace NatLibFi\FinnaCodeSets\Model;
  * - Has a selectable property.
  */
 class HierarchicalProxyDataObject implements
-    DataObjectInterface,
-    HierarchicalObjectInterface,
-    ProxyObjectInterface,
+    HierarchicalProxyDataObjectInterface,
     SelectableInterface
 {
     use HierarchicalObjectTrait {

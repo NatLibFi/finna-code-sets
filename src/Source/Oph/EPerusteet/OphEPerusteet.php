@@ -45,14 +45,6 @@ class OphEPerusteet implements OphEPerusteetInterface
     /**
      * {@inheritdoc}
      */
-    public function addEquivalentEducationalLevels(EducationalLevelInterface $educationalLevel): void
-    {
-        $this->educationalLevels->addEquivalentEducationalLevels($educationalLevel);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getEducationalSubjects(string $levelCodeValue): array
     {
         switch ($levelCodeValue) {

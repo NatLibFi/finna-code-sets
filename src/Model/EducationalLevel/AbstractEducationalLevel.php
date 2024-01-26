@@ -10,13 +10,6 @@ use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 abstract class AbstractEducationalLevel extends AbstractHierarchicalDataObject implements EducationalLevelInterface
 {
     /**
-     * Equivalent levels.
-     *
-     * @var array<EducationalLevelInterface>
-     */
-    protected array $equivalentLevels = [];
-
-    /**
      * Educational subjects.
      *
      * @var ?array<EducationalSubjectInterface>
@@ -33,33 +26,9 @@ abstract class AbstractEducationalLevel extends AbstractHierarchicalDataObject i
     /**
      * {@inheritdoc}
      */
-    public function getEquivalentLevels(): array
+    public function getEducationalLevelCodeValue(): string
     {
-        return $this->equivalentLevels;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addEquivalentLevel(EducationalLevelInterface $equivalentLevel): void
-    {
-        $this->equivalentLevels[$equivalentLevel->getId()] = $equivalentLevel;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEquivalentToLevel(string $id): bool
-    {
-        if ($this->getId() === $id) {
-            return true;
-        }
-        foreach ($this->getEquivalentLevels() as $equivalentLevel) {
-            if ($equivalentLevel->getId() === $id) {
-                return true;
-            }
-        }
-        return false;
+        return $this->getCodeValue();
     }
 
     /**

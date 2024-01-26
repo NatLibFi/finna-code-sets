@@ -58,7 +58,8 @@ class OphEperusteetEducationalModule extends OphEperusteetEducationalSubject imp
             foreach ($this->data['tavoitteet']['tavoitteet'] as $objectiveData) {
                 $proxy->addChild(new UpperSecondarySchoolStudyObjective(
                     $objectiveData,
-                    $this->apiBaseUrl
+                    $this->apiBaseUrl,
+                    $this->levelCodeValue
                 ));
             }
             $this->studyObjectives = $proxy;

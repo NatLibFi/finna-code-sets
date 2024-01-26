@@ -2,18 +2,8 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\StudyContents;
 
-use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
-use NatLibFi\FinnaCodeSets\Model\DataObjectInterface;
-use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\StudyDataObjectInterface;
 
-interface StudyContentsInterface extends DataObjectInterface, HierarchicalObjectInterface
+interface StudyContentsInterface extends StudyDataObjectInterface
 {
-    /**
-     * Get educational level code value.
-     *
-     * @return string
-     *
-     * @throws MissingValueException
-     */
-    public function getEducationalLevelCodeValue(): string;
 }

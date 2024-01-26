@@ -12,12 +12,4 @@ interface EducationalLevelsSourceInterface
      * @return array<EducationalLevelInterface>
      */
     public function getEducationalLevels(): array;
-
-    /**
-     * Recursively add equivalent educational levels.
-     *
-     * @param EducationalLevelInterface $educationalLevel
-     *     Root educational level.
-     */
-    public function addEquivalentEducationalLevels(EducationalLevelInterface $educationalLevel): void;
 }

@@ -2,9 +2,8 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\StudyObjective;
 
-use NatLibFi\FinnaCodeSets\Model\DataObjectInterface;
-use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\StudyDataObjectInterface;
 
-interface StudyObjectiveInterface extends DataObjectInterface, HierarchicalObjectInterface
+interface StudyObjectiveInterface extends StudyDataObjectInterface
 {
 }

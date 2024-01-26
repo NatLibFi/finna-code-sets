@@ -17,6 +17,7 @@ use NatLibFi\FinnaCodeSets\Model\StudyObjective\BasicEducationStudyObjective;
 use NatLibFi\FinnaCodeSets\Model\StudyObjective\UpperSecondarySchoolStudyObjective;
 use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteetInterface;
 use NatLibFi\FinnaCodeSets\Utility\Assert;
+use NatLibFi\FinnaCodeSets\Utility\EducationalData;
 
 class OphEperusteetEducationalSubject extends AbstractEducationalSubject
 {
@@ -159,11 +160,9 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
         if ($this->getEducationalLevelCodeValue() === $levelCodeValue) {
             return true;
         }
-        if ($levelId = EducationalLevelInterface::DVV_KOODISTOT_OPH_PERUSTEET_MAP[$levelCodeValue] ?? false) {
-            foreach ($this->getEducationalLevelsApplicableTo() as $id) {
-                if ($id === $levelId) {
-                    return true;
-                }
+        if ($levelId = EducationalData::DVV_KOODISTOT_OPH_PERUSTEET_MAP[$levelCodeValue] ?? false) {
+            if (in_array($levelId, $this->getEducationalLevelsApplicableTo())) {
+                return true;
             }
         }
         return false;
@@ -237,14 +236,16 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
                         case EducationalLevelInterface::BASIC_EDUCATION:
                             $proxyLevel->addChild(new BasicEducationStudyObjective(
                                 $objectiveData,
-                                $this->apiBaseUrl
+                                $this->apiBaseUrl,
+                                $this->levelCodeValue
                             ));
                             break;
 
                         case EducationalLevelInterface::UPPER_SECONDARY_SCHOOL:
                             $proxyLevel->addChild(new UpperSecondarySchoolStudyObjective(
                                 $objectiveData,
-                                $this->apiBaseUrl
+                                $this->apiBaseUrl,
+                                $this->levelCodeValue
                             ));
                             break;
 

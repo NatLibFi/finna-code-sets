@@ -2,23 +2,13 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\EducationalSubject;
 
-use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
 use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use NatLibFi\FinnaCodeSets\Exception\ValueNotSetException;
-use NatLibFi\FinnaCodeSets\Model\DataObjectInterface;
+use NatLibFi\FinnaCodeSets\Model\EducationalData\EducationalDataObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
 
-interface EducationalSubjectInterface extends DataObjectInterface, HierarchicalObjectInterface
+interface EducationalSubjectInterface extends EducationalDataObjectInterface
 {
-    /**
-     * Get educational level code value.
-     *
-     * @return string
-     *
-     * @throws MissingValueException
-     */
-    public function getEducationalLevelCodeValue(): string;
-
     /**
      * Is this educational subject applicable to the educational level?
      *

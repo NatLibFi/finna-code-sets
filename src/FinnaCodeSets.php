@@ -63,7 +63,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
         $this->ophOrganisaatio = new OphOrganisaatio($httpClient, $cache);
         $this->finna = new FinnaCodeSetsSource($httpClient, $cache);
         $this->finto = new FintoSource($httpClient, $cache);
-        $this->educationalData = new EducationalData($this);
+        $this->educationalData = new EducationalData($this, $this->ophEPerusteet);
     }
 
     /**
@@ -79,25 +79,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
      */
     public function getEducationalLevels(): array
     {
-        $item = $this->cache->getItem(md5(__METHOD__));
-        if (!$item->isHit()) {
-            $educationalLevels = $this->dvvKoodistot->getEducationalLevels();
-            foreach ($educationalLevels as $educationalLevel) {
-                $this->addEquivalentEducationalLevels($educationalLevel);
-            }
-            $this->cache->save($item->set($educationalLevels));
-        }
-        return $item->get();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addEquivalentEducationalLevels(EducationalLevelInterface $educationalLevel): void
-    {
-        if ($educationalLevel->getCodeValue() === EducationalLevelInterface::BASIC_EDUCATION) {
-            $this->ophEPerusteet->addEquivalentEducationalLevels($educationalLevel);
-        }
+        return $this->dvvKoodistot->getEducationalLevels();
     }
 
     /**

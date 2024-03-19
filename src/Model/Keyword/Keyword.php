@@ -15,9 +15,9 @@ class Keyword extends AbstractHierarchicalDataObject implements KeywordInterface
         return (string)$this->data['localname'];
     }
 
-  /**
-   * {@inheritdoc}
-   */
+    /**
+     * {@inheritdoc}
+     */
     public function getPrefLabels(): array
     {
         if (!isset($this->data['prefLabel'])) {

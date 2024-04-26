@@ -14,7 +14,7 @@ class VocationalUnit extends AbstractVocationalEducationalSubject implements Voc
     protected bool $isCommonUnit;
 
     public function __construct(
-        array $data,
+        mixed $data,
         string $apiBaseUrl,
         string $levelCodeValue,
         bool $isCommonUnit = false

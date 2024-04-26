@@ -4,6 +4,7 @@ namespace NatLibFi\FinnaCodeSets\Model;
 
 use NatLibFi\FinnaCodeSets\Exception\ExceptionInterface;
 use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
+use NatLibFi\FinnaCodeSets\Exception\UnexpectedValueException;
 use NatLibFi\FinnaCodeSets\Exception\ValueNotSetException;
 
 /**
@@ -28,13 +29,18 @@ abstract class AbstractDataObject implements DataObjectInterface
     /**
      * AbstractDataObject constructor.
      *
-     * @param array<mixed> $data
+     * @param mixed $data
      *     Data from API
      * @param string $apiBaseUrl
      *     Base URL of source API
+     *
+     * @throws UnexpectedValueException if data is not an array
      */
-    public function __construct(array $data, string $apiBaseUrl)
+    public function __construct(mixed $data, string $apiBaseUrl)
     {
+        if (!is_array($data)) {
+            throw (new UnexpectedValueException('Unexpected data'))->setValue($data);
+        }
         $this->data = $data;
         $this->apiBaseUrl = $apiBaseUrl;
     }

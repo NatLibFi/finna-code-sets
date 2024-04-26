@@ -31,7 +31,7 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
     /**
      * OphEperusteetEducationalSubject constructor.
      *
-     * @param array<mixed> $data
+     * @param mixed $data
      *     Data from API
      * @param string $apiBaseUrl
      *     Base URL of source API
@@ -39,8 +39,10 @@ class OphEperusteetEducationalSubject extends AbstractEducationalSubject
      *     Educational level code value
      * @param array<EducationalLevelInterface> $educationalLevels
      *     Educational levels
+     *
+     * @throws UnexpectedValueException if data is not an array
      */
-    public function __construct(array $data, string $apiBaseUrl, string $levelCodeValue, array $educationalLevels = [])
+    public function __construct(mixed $data, string $apiBaseUrl, string $levelCodeValue, array $educationalLevels = [])
     {
         parent::__construct($data, $apiBaseUrl, $levelCodeValue);
         $this->educationalLevels = $educationalLevels;

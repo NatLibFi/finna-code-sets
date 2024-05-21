@@ -789,11 +789,11 @@ class EducationalData
             $contentsOrObjective = Assert::studyDataObject(Data::deProxify($contentsOrObjective));
             $deProxied = Data::deProxify($contentsOrObjective->getParent());
             if ($deProxied instanceof OphEPerusteetEducationalLevel) {
-                $levelCodeValue = array_search(
-                    $deProxied->getId(),
-                    self::DVV_KOODISTOT_OPH_PERUSTEET_MAP
+                $levelCodeValues = array_keys(
+                    self::DVV_KOODISTOT_OPH_PERUSTEET_MAP,
+                    $deProxied->getId()
                 );
-                if (false !== $levelCodeValue) {
+                foreach ($levelCodeValues as $levelCodeValue) {
                     $dataByLevel[$levelCodeValue][$contentsOrObjective->getId()] = $contentsOrObjective;
                 }
             } else {

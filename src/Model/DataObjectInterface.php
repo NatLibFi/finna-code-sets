@@ -14,6 +14,7 @@ interface DataObjectInterface
 {
     public const LANGUAGE_FINNISH = 'fi';
     public const LANGUAGE_SWEDISH = 'sv';
+    public const LANGUAGE_NORTHERN_SAMI = 'se';
     public const LANGUAGE_ENGLISH = 'en';
 
     /**

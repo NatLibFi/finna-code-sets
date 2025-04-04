@@ -2,8 +2,14 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\NatLibFi\Finto;
 
+use NatLibFi\FinnaCodeSets\Model\Concept\ConceptInterface;
+use NatLibFi\FinnaCodeSets\Model\Concept\FintoChildConcept;
+use NatLibFi\FinnaCodeSets\Model\Concept\FintoGraphConcept;
+use NatLibFi\FinnaCodeSets\Model\Concept\FintoIndexConcept;
+use NatLibFi\FinnaCodeSets\Model\Concept\FintoTopConcept;
 use NatLibFi\FinnaCodeSets\Model\Keyword\Keyword;
 use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
+use NatLibFi\FinnaCodeSets\Utility\Assert;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 
@@ -23,10 +29,88 @@ class FintoSource extends AbstractApiSource implements FintoSourceInterface
     /**
      * {@inheritdoc}
      */
+    public function getVocabularyTopConcepts(string $vocid, ?string $langcode = null): array
+    {
+        $query = null !== $langcode ? ['lang' => $langcode] : [];
+        $response = $this->apiGet('/' . $vocid . '/topConcepts', $query);
+        $langcode = null !== $langcode ? $langcode : $response['@context']['@language'];
+        $concepts = [];
+        foreach ($response['topconcepts'] as $result) {
+            $concept = new FintoTopConcept($result, $this->getApiBaseUrl(), $vocid, $langcode);
+            $concepts[$concept->getId()] = $concept;
+        }
+        return $concepts;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyConceptData(string $vocid, string $uri, ?string $langcode = null): ConceptInterface
+    {
+        $query = ['format' => 'application/json', 'uri' => $uri];
+        if (null !== $langcode) {
+            $query['lang'] = $langcode;
+        }
+        $response = $this->apiGet('/' . $vocid . '/data', $query);
+        return FintoGraphConcept::fromConceptData($response, $this->getApiBaseUrl(), $vocid, $uri);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyConceptChildren(string $vocid, string $uri, ?string $langcode = null): array
+    {
+        $query = ['uri' => $uri];
+        if (null !== $langcode) {
+            $query['lang'] = $langcode;
+        }
+        $response = $this->apiGet('/' . $vocid . '/children', $query);
+        $langcode = null !== $langcode ? $langcode : $response['@context']['@language'];
+        $concepts = [];
+        foreach ($response['narrower'] as $result) {
+            if (null !== $result['prefLabel']) {
+                $concept = new FintoChildConcept($result, $this->getApiBaseUrl(), $vocid, $langcode);
+                $concepts[$concept->getId()] = $concept;
+            }
+        }
+        return $concepts;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyIndexLetters(string $vocid, ?string $langcode = null): array
+    {
+        $query = null !== $langcode ? ['lang' => $langcode] : [];
+        $response = $this->apiGet('/' . $vocid . '/index/', $query);
+        return $response['indexLetters'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyIndex(string $vocid, string $letter, ?string $langcode = null): array
+    {
+        $query = null !== $langcode ? ['lang' => $langcode] : [];
+        $response = $this->apiGet('/' . $vocid . '/index/' . $letter, $query);
+        $concepts = [];
+        foreach ($response['indexConcepts'] as $result) {
+            if (FintoSourceInterface::VOCABULARY_FINTO_YSO === $vocid) {
+                $concept = new Keyword($result, $this->getApiBaseUrl(), $vocid);
+            } else {
+                $concept = new FintoIndexConcept($result, $this->getApiBaseUrl(), $vocid);
+            }
+            $concepts[$concept->getId()] = $concept;
+        }
+        return $concepts;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getKeywordsIndexLetters(string $langcode): array
     {
-        $response = $this->apiGet('/yso/index/', ['lang' => $langcode]);
-        return $response['indexLetters'];
+        return $this->getVocabularyIndexLetters(FintoSourceInterface::VOCABULARY_FINTO_YSO, $langcode);
     }
 
     /**
@@ -34,12 +118,8 @@ class FintoSource extends AbstractApiSource implements FintoSourceInterface
      */
     public function getKeywordsIndex(string $langcode, string $letter): array
     {
-        $response = $this->apiGet('/yso/index/' . $letter, ['lang' => $langcode]);
-        $keywords = [];
-        foreach ($response['indexConcepts'] as $result) {
-            $keyword = new Keyword($result, $this->getApiBaseUrl());
-            $keywords[$keyword->getId()] = $keyword;
-        }
-        return $keywords;
+        return Assert::keywords(
+            $this->getVocabularyIndex(FintoSourceInterface::VOCABULARY_FINTO_YSO, $letter, $langcode),
+        );
     }
 }

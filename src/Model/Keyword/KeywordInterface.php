@@ -2,9 +2,13 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\Keyword;
 
-use NatLibFi\FinnaCodeSets\Model\DataObjectInterface;
-use NatLibFi\FinnaCodeSets\Model\HierarchicalObjectInterface;
+use NatLibFi\FinnaCodeSets\Model\Concept\ConceptInterface;
 
-interface KeywordInterface extends DataObjectInterface, HierarchicalObjectInterface
+/**
+ * Keyword interface.
+ *
+ * @deprecated Replaced by ConceptInterface.
+ */
+interface KeywordInterface extends ConceptInterface
 {
 }

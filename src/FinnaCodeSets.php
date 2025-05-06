@@ -4,6 +4,7 @@ namespace NatLibFi\FinnaCodeSets;
 
 use GuzzleHttp\Client;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
+use NatLibFi\FinnaCodeSets\Model\Concept\ConceptInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
@@ -19,6 +20,12 @@ use Psr\Http\Client\ClientInterface;
 
 class FinnaCodeSets implements FinnaCodeSetsInterface
 {
+    protected const SUPPORTED_VOCABULARIES = [
+        FinnaCodeSetsInterface::VOCABULARY_FINTO_YSO,
+        FinnaCodeSetsInterface::VOCABULARY_FINTO_YSO_PLACES,
+        FinnaCodeSetsInterface::VOCABULARY_FINTO_YSO_TIME,
+    ];
+
     protected CacheItemPoolInterface $cache;
 
     protected DvvKoodistot $dvvKoodistot;
@@ -126,6 +133,8 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated
      */
     public function getKeywordsIndexLetters(string $langcode): array
     {
@@ -134,6 +143,8 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated
      */
     public function getKeywordsIndex(string $langcode, string $letter): array
     {
@@ -192,6 +203,61 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
     {
         return $this->ophEPerusteet->isSupportedTransversalCompetenceUrl($url)
             || $this->finna->isSupportedTransversalCompetenceUrl($url);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyTopConcepts(string $vocid, ?string $langcode = null): array
+    {
+        if (!in_array($vocid, self::SUPPORTED_VOCABULARIES)) {
+            throw new NotSupportedException($vocid);
+        }
+        return $this->finto->getVocabularyTopConcepts($vocid, $langcode);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyConceptData(string $vocid, string $uri, ?string $langcode = null): ConceptInterface
+    {
+        if (!in_array($vocid, self::SUPPORTED_VOCABULARIES)) {
+            throw new NotSupportedException($vocid);
+        }
+        return $this->finto->getVocabularyConceptData($vocid, $uri, $langcode);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyConceptChildren(string $vocid, string $uri, ?string $langcode = null): array
+    {
+        if (!in_array($vocid, self::SUPPORTED_VOCABULARIES)) {
+            throw new NotSupportedException($vocid);
+        }
+        return $this->finto->getVocabularyConceptChildren($vocid, $uri, $langcode);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyIndexLetters(string $vocid, ?string $langcode = null): array
+    {
+        if (!in_array($vocid, self::SUPPORTED_VOCABULARIES)) {
+            throw new NotSupportedException($vocid);
+        }
+        return $this->finto->getVocabularyIndexLetters($vocid, $langcode);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVocabularyIndex(string $vocid, string $letter, ?string $langcode = null): array
+    {
+        if (!in_array($vocid, self::SUPPORTED_VOCABULARIES)) {
+            throw new NotSupportedException($vocid);
+        }
+        return $this->finto->getVocabularyIndex($vocid, $letter, $langcode);
     }
 
     /**

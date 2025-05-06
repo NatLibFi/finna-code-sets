@@ -6,10 +6,12 @@ Support library for code sets used in Finna record formats.
 - Fetches code set values and other data from web APIs.
 - Provides a pluggable caching mechanism for fetched and processed data.
 
-The initial version provides support for [LRMI_FI](https://wiki.eduuni.fi/pages/viewpage.action?pageId=222560437) and the following sources:
+Currently supports [LRMI_FI](https://wiki.eduuni.fi/pages/viewpage.action?pageId=222560437) and the following sources:
 
 - Finto
-  - [Keywords](https://finto.fi/yso)
+  - [YSO](https://finto.fi/yso) - General Finnish ontology
+  - [YSO-time](https://finto.fi/yso-aika)
+  - [YSO places](https://finto.fi/yso-paikat)
 - DVV Koodistot
     - [Educational levels](http://uri.suomi.fi/codelist/edtech/Koulutusaste)
     - [Licences](http://uri.suomi.fi/codelist/edtech/Licence)

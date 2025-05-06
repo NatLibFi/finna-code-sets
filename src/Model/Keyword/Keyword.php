@@ -2,27 +2,17 @@
 
 namespace NatLibFi\FinnaCodeSets\Model\Keyword;
 
-use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
-use NatLibFi\FinnaCodeSets\Model\AbstractHierarchicalDataObject;
+use NatLibFi\FinnaCodeSets\Model\Concept\FintoIndexConcept;
 
-class Keyword extends AbstractHierarchicalDataObject implements KeywordInterface
+/**
+ * Keyword data object.
+ *
+ * @deprecated
+ */
+class Keyword extends FintoIndexConcept implements KeywordInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getId(): string
+    public function __construct(mixed $data, string $apiBaseUrl, string $vocid = '', ?string $langcode = null)
     {
-        return (string)$this->data['localname'];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPrefLabels(): array
-    {
-        if (!isset($this->data['prefLabel'])) {
-            throw new MissingValueException('Preferred labels');
-        }
-        return [$this->data['lang'] => $this->data['prefLabel']];
+        parent::__construct($data, $apiBaseUrl, $vocid, $langcode);
     }
 }

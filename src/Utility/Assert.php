@@ -9,6 +9,7 @@ use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalProxyDataObject;
 use NatLibFi\FinnaCodeSets\Model\HierarchicalProxyDataObjectInterface;
+use NatLibFi\FinnaCodeSets\Model\Keyword\KeywordInterface;
 use NatLibFi\FinnaCodeSets\Model\ProxyObjectInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyObjective\StudyObjectiveInterface;
@@ -168,5 +169,24 @@ class Assert
             throw (new UnexpectedValueException('Not a vocational unit'))->setValue($object);
         }
         return $object;
+    }
+
+    /**
+     * Assert that the array contains instances of KeywordInterface.
+     *
+     * @param array<mixed> $objects
+     *
+     * @return array<KeywordInterface>
+     *
+     * @deprecated
+     */
+    public static function keywords(array $objects): array
+    {
+        foreach ($objects as $object) {
+            if (!$object instanceof KeywordInterface) {
+                throw (new UnexpectedValueException('Not a keyword'))->setValue($object);
+            }
+        }
+        return $objects;
     }
 }

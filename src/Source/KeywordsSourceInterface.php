@@ -4,6 +4,11 @@ namespace NatLibFi\FinnaCodeSets\Source;
 
 use NatLibFi\FinnaCodeSets\Model\Keyword\KeywordInterface;
 
+/**
+ * Keywords source interface.
+ *
+ * @deprecated Replaced by VocabularySourceInterface.
+ */
 interface KeywordsSourceInterface
 {
     /**
@@ -13,6 +18,8 @@ interface KeywordsSourceInterface
      *     Language code
      *
      * @return array<string>
+     *
+     * @deprecated Use VocabularySourceInterface::getVocabularyIndexLetters() instead.
      */
     public function getKeywordsIndexLetters(string $langcode): array;
 
@@ -25,6 +32,8 @@ interface KeywordsSourceInterface
      *     Letter
      *
      * @return array<KeywordInterface>
+     *
+     * @deprecated Use VocabularySourceInterface::getVocabularyIndex() instead.
      */
     public function getKeywordsIndex(string $langcode, string $letter): array;
 }

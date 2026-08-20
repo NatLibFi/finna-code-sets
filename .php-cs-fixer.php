@@ -16,7 +16,6 @@ $rules = [
     'class_attributes_separation' => ['elements' => ['method' => 'one', 'property' => 'one']],
     'concat_space' => ['spacing' => 'one'],
     'ereg_to_preg' => true,
-    'function_typehint_space' => true,
     'is_null' => true,
     'linebreak_after_opening_tag' => true,
     'lowercase_cast' => true,
@@ -33,7 +32,7 @@ $rules = [
     'no_singleline_whitespace_before_semicolons' => true,
     'no_spaces_around_offset' => true,
     'no_unneeded_control_parentheses' => true,
-    'no_unneeded_curly_braces' => true,
+    'no_unneeded_braces' => true,
     'no_unused_imports' => true,
     'no_useless_return' => true,
     'no_whitespace_in_blank_line' => true,
@@ -45,6 +44,7 @@ $rules = [
     'single_line_after_imports' => true,
     'standardize_not_equals' => true,
     'ternary_operator_spaces' => true,
+    'type_declaration_spaces' => true,
 ];
 
 $config = new PhpCsFixer\Config();

@@ -3,9 +3,10 @@
 namespace NatLibFi\FinnaCodeSets\Source;
 
 use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
+use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\Organisation\OrganisationInterface;
 
-interface OrganisationsSourceInterface
+interface OrganisationsSourceInterface extends SourceInterface
 {
     /**
      * Get organisations.
@@ -13,6 +14,7 @@ interface OrganisationsSourceInterface
      * @return array<OrganisationInterface>
      *
      * @throws MissingValueException
+     * @throws NotSupportedException
      */
     public function getOrganisations(): array;
 }

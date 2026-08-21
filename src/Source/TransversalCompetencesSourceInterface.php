@@ -6,7 +6,7 @@ use NatLibFi\FinnaCodeSets\Exception\NotFoundException;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 
-interface TransversalCompetencesSourceInterface
+interface TransversalCompetencesSourceInterface extends SourceInterface
 {
     /**
      * Get transversal competences.

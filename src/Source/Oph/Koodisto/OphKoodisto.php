@@ -12,12 +12,40 @@ use Psr\Http\Client\ClientInterface;
 
 class OphKoodisto extends AbstractApiSource implements OphKoodistoInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function getDefaultConfig(): array
+    {
+        return [
+            'apiBaseUrl' => OphKoodistoInterface::DEFAULT_API_BASE_URL,
+        ];
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param ClientInterface $httpClient
+     *     PSR-18 compliant HTTP Client
+     * @param CacheItemPoolInterface $cache
+     *     PSR-6 compliant caching system
+     * @param array<string, mixed> $config
+     *     Configuration
+     */
     public function __construct(
         ClientInterface $httpClient,
         CacheItemPoolInterface $cache,
-        string $apiBaseUrl = OphKoodistoInterface::DEFAULT_API_BASE_URL
+        array $config
     ) {
-        parent::__construct($httpClient, $cache, $apiBaseUrl);
+        parent::__construct($httpClient, $cache, $config['apiBaseUrl']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setConfig(array $config): void
+    {
+        $this->setApiBaseUrl($config['apiBaseUrl']);
     }
 
     /**

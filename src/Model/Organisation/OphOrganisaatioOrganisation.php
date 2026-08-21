@@ -5,7 +5,7 @@ namespace NatLibFi\FinnaCodeSets\Model\Organisation;
 use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
 use NatLibFi\FinnaCodeSets\Model\AbstractHierarchicalDataObject;
 
-class Organisation extends AbstractHierarchicalDataObject implements OrganisationInterface
+class OphOrganisaatioOrganisation extends AbstractHierarchicalDataObject implements OrganisationInterface
 {
     /**
      * {@inheritdoc}

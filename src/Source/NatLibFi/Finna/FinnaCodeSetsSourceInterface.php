@@ -2,10 +2,12 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna;
 
+use NatLibFi\FinnaCodeSets\Source\ConfigurableSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\TransversalCompetencesSourceInterface;
 
 interface FinnaCodeSetsSourceInterface extends
+    ConfigurableSourceInterface,
     EducationalSubjectsSourceInterface,
     TransversalCompetencesSourceInterface
 {

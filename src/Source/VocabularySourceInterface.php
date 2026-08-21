@@ -5,7 +5,7 @@ namespace NatLibFi\FinnaCodeSets\Source;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\Concept\ConceptInterface;
 
-interface VocabularySourceInterface
+interface VocabularySourceInterface extends SourceInterface
 {
     /**
      * Get list of top concepts of the vocabulary.

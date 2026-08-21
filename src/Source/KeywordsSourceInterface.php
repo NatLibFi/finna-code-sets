@@ -2,6 +2,7 @@
 
 namespace NatLibFi\FinnaCodeSets\Source;
 
+use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\Keyword\KeywordInterface;
 
 /**
@@ -9,7 +10,7 @@ use NatLibFi\FinnaCodeSets\Model\Keyword\KeywordInterface;
  *
  * @deprecated Replaced by VocabularySourceInterface.
  */
-interface KeywordsSourceInterface
+interface KeywordsSourceInterface extends SourceInterface
 {
     /**
      * Get list of the initial letters of keywords in the given language.
@@ -18,6 +19,8 @@ interface KeywordsSourceInterface
      *     Language code
      *
      * @return array<string>
+     *
+     * @throws NotSupportedException
      *
      * @deprecated Use VocabularySourceInterface::getVocabularyIndexLetters() instead.
      */
@@ -32,6 +35,8 @@ interface KeywordsSourceInterface
      *     Letter
      *
      * @return array<KeywordInterface>
+     *
+     * @throws NotSupportedException
      *
      * @deprecated Use VocabularySourceInterface::getVocabularyIndex() instead.
      */

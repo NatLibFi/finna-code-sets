@@ -2,12 +2,14 @@
 
 namespace NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet;
 
+use NatLibFi\FinnaCodeSets\Source\ConfigurableSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\EducationalLevelsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\TransversalCompetencesSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\VocationalQualificationsSourceInterface;
 
 interface OphEPerusteetInterface extends
+    ConfigurableSourceInterface,
     EducationalLevelsSourceInterface,
     EducationalSubjectsSourceInterface,
     TransversalCompetencesSourceInterface,

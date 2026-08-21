@@ -20,18 +20,47 @@ class OphEPerusteet implements OphEPerusteetInterface
     protected VocationalQualificationsSource $vocationalQualifications;
 
     /**
-     * OphEPerusteet constructor.
+     * {@inheritdoc}
+     */
+    public static function getDefaultConfig(): array
+    {
+        return [
+            'apiBaseUrl' => OphEPerusteetInterface::DEFAULT_API_BASE_URL,
+        ];
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param ClientInterface $httpClient
+     *     PSR-18 compliant HTTP Client
+     * @param CacheItemPoolInterface $cache
+     *     PSR-6 compliant caching system
+     * @param array<string, mixed> $config
+     *     Configuration
      */
     public function __construct(
         ClientInterface $httpClient,
         CacheItemPoolInterface $cache,
-        string $apiBaseUrl = OphEPerusteetInterface::DEFAULT_API_BASE_URL
+        array $config
     ) {
+        $apiBaseUrl = $config['apiBaseUrl'];
         $this->educationalLevels = new EducationalLevelsSource($httpClient, $cache, $apiBaseUrl);
         $this->educationalSubjects
             = new EducationalSubjectsSource($httpClient, $cache, $apiBaseUrl, $this->educationalLevels);
         $this->transversalCompetences = new TransversalCompetencesSource($httpClient, $cache, $apiBaseUrl);
         $this->vocationalQualifications = new VocationalQualificationsSource($httpClient, $cache, $apiBaseUrl);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setConfig(array $config): void
+    {
+        $this->educationalLevels->setApiBaseUrl($config['apiBaseUrl']);
+        $this->educationalSubjects->setApiBaseUrl($config['apiBaseUrl']);
+        $this->transversalCompetences->setApiBaseUrl($config['apiBaseUrl']);
+        $this->vocationalQualifications->setApiBaseUrl($config['apiBaseUrl']);
     }
 
     /**

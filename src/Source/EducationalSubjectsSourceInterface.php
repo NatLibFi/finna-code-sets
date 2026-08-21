@@ -6,7 +6,7 @@ use NatLibFi\FinnaCodeSets\Exception\NotFoundException;
 use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
 
-interface EducationalSubjectsSourceInterface
+interface EducationalSubjectsSourceInterface extends SourceInterface
 {
     /**
      * Get educational subjects.

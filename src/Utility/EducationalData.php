@@ -25,7 +25,7 @@ use NatLibFi\FinnaCodeSets\Model\StudyObjective\StudyObjectiveInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalQualification\VocationalQualificationInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalUnit\VocationalUnitInterface;
 use NatLibFi\FinnaCodeSets\Model\VocationalUnitSubject\VocationalUnitSubjectInterface;
-use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteet;
+use NatLibFi\FinnaCodeSets\Source\Oph\EPerusteet\OphEPerusteetInterface;
 
 /**
  * Utility methods for working with educational data.
@@ -120,15 +120,17 @@ class EducationalData
 
     protected FinnaCodeSets $codeSets;
 
-    protected OphEPerusteet $ophEPerusteet;
+    protected OphEPerusteetInterface $ophEPerusteet;
 
     /**
      * EducationalData constructor.
      *
      * @param FinnaCodeSets $codeSets
      *     Library instance used by utility methods
+     * @param OphEPerusteetInterface $ophEPerusteet
+     *     OPH ePerusteet source
      */
-    public function __construct(FinnaCodeSets $codeSets, OphEPerusteet $ophEPerusteet)
+    public function __construct(FinnaCodeSets $codeSets, OphEPerusteetInterface $ophEPerusteet)
     {
         $this->codeSets = $codeSets;
         $this->ophEPerusteet = $ophEPerusteet;

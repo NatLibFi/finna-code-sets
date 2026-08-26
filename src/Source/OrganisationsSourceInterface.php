@@ -17,4 +17,14 @@ interface OrganisationsSourceInterface extends SourceInterface
      * @throws NotSupportedException
      */
     public function getOrganisations(): array;
+
+    /**
+     * Get organisation.
+     *
+     * @param string $id
+     *     Organisation ID
+     *
+     * @return OrganisationInterface|null
+     */
+    public function getOrganisation(string $id): ?OrganisationInterface;
 }

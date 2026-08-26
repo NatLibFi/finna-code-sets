@@ -9,6 +9,7 @@ use NatLibFi\FinnaCodeSets\Exception\NotSupportedException;
 use NatLibFi\FinnaCodeSets\Model\Concept\ConceptInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalLevel\EducationalLevelInterface;
 use NatLibFi\FinnaCodeSets\Model\EducationalSubject\EducationalSubjectInterface;
+use NatLibFi\FinnaCodeSets\Model\Organisation\OrganisationInterface;
 use NatLibFi\FinnaCodeSets\Model\StudyContents\StudyContentsInterface;
 use NatLibFi\FinnaCodeSets\Source\ConfigurableSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\Dvv\Koodistot\DvvKoodistot;
@@ -16,6 +17,7 @@ use NatLibFi\FinnaCodeSets\Source\EducationalLevelsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\EducationalSubjectsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\KeywordsSourceInterface;
 use NatLibFi\FinnaCodeSets\Source\LicencesSourceInterface;
+use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna\FinnaAdminApi;
 use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finna\FinnaCodeSetsSource;
 use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finto\FintoSource;
 use NatLibFi\FinnaCodeSets\Source\NatLibFi\Finto\FintoSourceInterface;
@@ -80,6 +82,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
         return [
             'classes' => [
                 DvvKoodistot::class => DvvKoodistot::getDefaultConfig(),
+                FinnaAdminApi::class => FinnaAdminApi::getDefaultConfig(),
                 FinnaCodeSetsSource::class => FinnaCodeSetsSource::getDefaultConfig(),
                 FintoSource::class => FintoSource::getDefaultConfig(),
                 OphEPerusteet::class => OphEPerusteet::getDefaultConfig(),
@@ -145,6 +148,7 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
 
         $this->classes = $classes = [
             DvvKoodistot::class => new DvvKoodistot($httpClient, $cache, $config['classes'][DvvKoodistot::class]),
+            FinnaAdminApi::class => new FinnaAdminApi($httpClient, $cache, $config['classes'][FinnaAdminApi::class]),
             FinnaCodeSetsSource::class
                 => new FinnaCodeSetsSource($httpClient, $cache, $config['classes'][FinnaCodeSetsSource::class]),
             FintoSource::class => new FintoSource($httpClient, $cache, $config['classes'][FintoSource::class]),
@@ -302,6 +306,16 @@ class FinnaCodeSets implements FinnaCodeSetsInterface
         $source = $this->getSource(OrganisationsSourceInterface::class);
         assert($source instanceof OrganisationsSourceInterface);
         return $source->getOrganisations();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrganisation(string $id): ?OrganisationInterface
+    {
+        $source = $this->getSource(OrganisationsSourceInterface::class);
+        assert($source instanceof OrganisationsSourceInterface);
+        return $source->getOrganisation($id);
     }
 
     /**

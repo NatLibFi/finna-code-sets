@@ -4,6 +4,7 @@ namespace NatLibFi\FinnaCodeSets\Source\Oph\Organisaatio;
 
 use NatLibFi\FinnaCodeSets\Exception\MissingValueException;
 use NatLibFi\FinnaCodeSets\Model\Organisation\OphOrganisaatioOrganisation;
+use NatLibFi\FinnaCodeSets\Model\Organisation\OrganisationInterface;
 use NatLibFi\FinnaCodeSets\Source\AbstractApiSource;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
@@ -84,5 +85,17 @@ class OphOrganisaatio extends AbstractApiSource implements OphOrganisaatioInterf
             }
         }
         return $organisations;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrganisation(string $id): ?OrganisationInterface
+    {
+        $response = $this->apiGet('/' . $id);
+        if (isset($response['errorKey'])) {
+            return null;
+        }
+        return new OphOrganisaatioOrganisation($response, $this->getApiBaseUrl());
     }
 }
